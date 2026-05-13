@@ -63,16 +63,23 @@ export default function Login({ hotel, role, onLoginSuccess, onBack }) {
             if (userData) {
                 localStorage.setItem('hotelId', hotel.id);
                 localStorage.setItem('hotelName', hotel.hotelName);
-                localStorage.setItem('userRole', userData.role);
+                localStorage.setItem('userRole', role); // Use the role we logged in with
                 onLoginSuccess(userData);
             }
         } catch (err) {
-            console.error(err);
-            setError('Authentication Failed: Invalid credentials or network error.');
+            console.error("Login Error:", err);
+            if (err.code === 'auth/invalid-credential' || err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password') {
+                setError('Invalid Owner credentials. Please check your email and password.');
+            } else if (err.code === 'auth/network-request-failed') {
+                setError('Network error. Please check your internet connection.');
+            } else {
+                setError(err.message || 'Authentication Failed. Please try again.');
+            }
         } finally {
             setLoading(false);
         }
     };
+
     return (
         <div className="iot-login-shell">
             <div className="iot-login-card">
@@ -83,18 +90,18 @@ export default function Login({ hotel, role, onLoginSuccess, onBack }) {
                     <div className="brand-icon">
                         <Cpu size={40} />
                     </div>
-                    <h1>IOT CORE</h1>
-                    <p>TTB Card Management & Hardware Monitor</p>
+                    <h1>{role.toUpperCase()} LOGIN</h1>
+                    <p>Authenticating for <strong>{hotel.hotelName}</strong></p>
                 </div>
 
                 <form onSubmit={handleLogin} className="login-form">
                     <div className="input-group-iot">
-                        <label>Authorized Email</label>
+                        <label>{role === 'owner' ? 'Owner Email' : 'Manager Email'}</label>
                         <div className="input-wrapper">
                             <Mail size={18} />
                             <input 
                                 type="email" 
-                                placeholder="manager@chillax.com"
+                                placeholder={role === 'owner' ? "owner@example.com" : "manager@example.com"}
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 autoComplete="email"
@@ -121,7 +128,7 @@ export default function Login({ hotel, role, onLoginSuccess, onBack }) {
                     {error && <div className="login-error"><ShieldCheck size={16} /> {error}</div>}
 
                     <button type="submit" disabled={loading} className="iot-btn-primary">
-                        {loading ? 'Authenticating...' : 'Enter System'}
+                        {loading ? 'Authenticating...' : `Login as ${role.charAt(0).toUpperCase() + role.slice(1)}`}
                         <ArrowRight size={20} />
                     </button>
                 </form>
