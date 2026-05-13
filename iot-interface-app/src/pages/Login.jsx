@@ -2,9 +2,9 @@ import { useState } from 'react';
 import { auth, db } from '../firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
-import { Cpu, Lock, Mail, ArrowRight, ShieldCheck } from 'lucide-react';
+import { Cpu, Lock, Mail, ArrowRight, ShieldCheck, ArrowLeft } from 'lucide-react';
 
-export default function Login({ onLoginSuccess }) {
+export default function Login({ hotel, role, onLoginSuccess, onBack }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
@@ -23,29 +23,40 @@ export default function Login({ onLoginSuccess }) {
             const userDoc = await getDoc(doc(db, 'users', user.uid));
             if (userDoc.exists()) {
                 const userData = userDoc.data();
-                if (userData.role === 'owner' || userData.role === 'manager') {
-                    localStorage.setItem('hotelId', userData.hotelId);
-                    localStorage.setItem('hotelName', userData.hotelName);
-                    localStorage.setItem('userRole', userData.role);
-                    onLoginSuccess(userData);
-                } else {
-                    setError('Access Denied: Only Managers/Owners can access IOT CORE.');
+                
+                // VALIDATE HOTEL AND ROLE
+                if (userData.hotelId !== hotel.id) {
+                    setError(`Access Denied: Your account is not registered with ${hotel.hotelName}.`);
                     await auth.signOut();
+                    return;
                 }
+
+                if (userData.role !== role && userData.role !== 'owner') { // Owners can login as managers usually
+                    setError(`Access Denied: You are not authorized as a ${role.toUpperCase()}.`);
+                    await auth.signOut();
+                    return;
+                }
+
+                localStorage.setItem('hotelId', userData.hotelId);
+                localStorage.setItem('hotelName', userData.hotelName);
+                localStorage.setItem('userRole', userData.role);
+                onLoginSuccess(userData);
             } else {
                 setError('User profile not found in system.');
                 await auth.signOut();
             }
         } catch (err) {
-            setError(err.message);
+            setError('Authentication Failed: Invalid credentials or network error.');
         } finally {
             setLoading(false);
         }
     };
 
-    return (
         <div className="iot-login-shell">
             <div className="iot-login-card">
+                <button className="back-btn-iot-mini" onClick={onBack}>
+                    <ArrowLeft size={16} /> Change Role
+                </button>
                 <div className="login-header">
                     <div className="brand-icon">
                         <Cpu size={40} />

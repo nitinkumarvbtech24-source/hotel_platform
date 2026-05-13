@@ -689,3 +689,269 @@ body {
     }
 }
 
+/* --- AUTH FLOW STYLES --- */
+.iot-auth-shell {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(circle at center, #161b22 0%, #0a0c10 100%);
+    padding: 40px 20px;
+}
+
+.auth-container {
+    width: 100%;
+    max-width: 800px;
+    background: #0d1117;
+    border: 1px solid var(--iot-border);
+    border-radius: 32px;
+    padding: 48px;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+}
+
+.auth-container.narrow {
+    max-width: 500px;
+}
+
+.auth-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 6px 12px;
+    background: rgba(16, 185, 129, 0.1);
+    color: #10b981;
+    font-size: 0.7rem;
+    font-weight: 800;
+    border-radius: 20px;
+    margin-bottom: 16px;
+    letter-spacing: 1px;
+}
+
+.auth-header h1 {
+    font-size: 2.5rem;
+    font-weight: 900;
+    letter-spacing: -2px;
+    margin-bottom: 12px;
+    color: #fff;
+}
+
+.auth-header p {
+    color: var(--iot-text-dim);
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+.search-bar-iot {
+    position: relative;
+    margin-bottom: 32px;
+}
+
+.search-bar-iot svg {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--iot-text-dim);
+}
+
+.search-bar-iot input {
+    width: 100%;
+    padding: 16px 16px 16px 52px;
+    background: #010409;
+    border: 1px solid var(--iot-border);
+    border-radius: 16px;
+    color: #fff;
+    font-size: 1rem;
+    outline: none;
+    transition: 0.3s;
+}
+
+.search-bar-iot input:focus {
+    border-color: #10b981;
+}
+
+.hotel-grid-iot {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-height: 400px;
+    overflow-y: auto;
+    padding-right: 8px;
+}
+
+.hotel-card-iot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px;
+    background: var(--iot-card);
+    border: 1px solid var(--iot-border);
+    border-radius: 20px;
+    cursor: pointer;
+    transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hotel-card-iot:hover {
+    border-color: #10b981;
+    transform: translateX(8px);
+    background: rgba(16, 185, 129, 0.05);
+}
+
+.hotel-card-left {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.hotel-icon-box {
+    width: 50px;
+    height: 50px;
+    background: #010409;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--iot-text-dim);
+}
+
+.hotel-card-iot:hover .hotel-icon-box {
+    color: #10b981;
+}
+
+.hotel-card-info h3 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+.hotel-card-info span {
+    font-size: 0.8rem;
+    color: var(--iot-text-dim);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.arrow {
+    color: var(--iot-text-dim);
+    opacity: 0;
+    transition: 0.3s;
+}
+
+.hotel-card-iot:hover .arrow {
+    opacity: 1;
+    transform: translateX(4px);
+    color: #10b981;
+}
+
+/* --- ROLE SELECT STYLES --- */
+.role-grid-iot {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+}
+
+.role-card-iot {
+    padding: 32px;
+    background: var(--iot-card);
+    border: 1px solid var(--iot-border);
+    border-radius: 24px;
+    text-align: center;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.role-card-iot:hover {
+    border-color: #10b981;
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+}
+
+.role-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 24px;
+    transition: 0.3s;
+}
+
+.role-icon.owner { background: rgba(16, 185, 129, 0.1); color: #10b981; }
+.role-icon.manager { background: rgba(58, 134, 255, 0.1); color: #3a86ff; }
+
+.role-card-iot h2 {
+    font-size: 1.5rem;
+    font-weight: 900;
+    margin-bottom: 12px;
+    letter-spacing: 1px;
+}
+
+.role-card-iot p {
+    font-size: 0.9rem;
+    color: var(--iot-text-dim);
+    line-height: 1.5;
+}
+
+.back-btn-iot {
+    background: none;
+    border: none;
+    color: var(--iot-text-dim);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-bottom: 24px;
+}
+
+.selected-property-pill {
+    display: inline-block;
+    padding: 6px 16px;
+    background: var(--iot-border);
+    border-radius: 30px;
+    font-size: 0.8rem;
+    font-weight: 800;
+    color: #fff;
+    margin-bottom: 16px;
+}
+
+.back-btn-iot-mini {
+    position: absolute;
+    top: 24px;
+    left: 24px;
+    background: none;
+    border: none;
+    color: var(--iot-text-dim);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.logout-btn-iot {
+    margin-top: 12px !important;
+    background: rgba(218, 54, 51, 0.05) !important;
+    color: #da3633 !important;
+    border-color: rgba(218, 54, 51, 0.1) !important;
+}
+
+.logout-btn-iot:hover {
+    background: rgba(218, 54, 51, 0.1) !important;
+    border-color: #da3633 !important;
+}
+
+.loading-dots {
+    text-align: center;
+    padding: 40px;
+    color: var(--iot-text-dim);
+    font-weight: 700;
+}
+
+
