@@ -114,97 +114,95 @@ export default function Login() {
 
     return (
         <div className="auth-shell">
-            <div className="login-split-container">
-                {/* Hero Side */}
-                <div className="login-hero-side">
-                    <img
-                        src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80"
-                        alt="Premium Hotel"
-                    />
-                    <div className="hero-content">
-                        <div className="brand-large">
+            {/* Animated Background Blobs */}
+            <div className="bg-blob blob-1"></div>
+            <div className="bg-blob blob-2"></div>
+            <div className="bg-blob blob-3"></div>
+
+            <div className="auth-container-premium">
+                <div className="login-vibrant-container">
+                    {/* Hero Side */}
+                    <div className="login-hero-vibrant">
+                        <div className="brand-vibrant">
                             <span>CHILLAX HOTEL OS</span>
-                            <h1>Industry Standard Hospitality.</h1>
+                            <h1>Hospitality. Redefined.</h1>
                         </div>
                         <div className="hero-quote">
-                            <p>"Efficiency is the foundation of great guest experiences."</p>
+                            <p style={{ color: 'white' }}>"Precision in management leads to excellence in service."</p>
                         </div>
-                    </div>
-                    <div className="hero-footer" style={{ position: 'relative', z-index: 2, fontSize: '0.8rem', opacity: 0.7 }}>
-                        © 2024 Chillax Systems. All rights reserved.
-                    </div>
-                </div>
-
-                {/* Form Side */}
-                <div className="login-form-side">
-                    <div className="form-header">
-                        <h2>Welcome back</h2>
-                        <p>Accessing as <strong>{localStorage.getItem('role') || 'Staff'}</strong> at {localStorage.getItem('hotelName') || 'Hotel'}</p>
-                    </div>
-
-                    {error && <div className="error-pill">{error}</div>}
-
-                    <div className="input-group">
-                        <label>Email Address</label>
-                        <div className="input-wrapper">
-                            <Mail size={18} />
-                            <input
-                                type="email"
-                                placeholder="name@hotel.com"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                            />
+                        <div style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.8rem', fontWeight: 600 }}>
+                            TRUSTED BY 500+ HOTELS GLOBALLY
                         </div>
                     </div>
 
-                    <div className="input-group">
-                        <label>Password</label>
-                        <div className="input-wrapper">
-                            <Lock size={18} />
-                            <input
-                                type="password"
-                                placeholder="••••••••"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                onKeyPress={(e) => e.key === 'Enter' && handleLogin()}
-                            />
+                    {/* Form Side */}
+                    <div className="login-form-vibrant">
+                        <div className="form-header">
+                            <h2 style={{ fontSize: '2.5rem', marginBottom: '8px' }}>Login</h2>
+                            <p>Enter your credentials to access your dashboard</p>
                         </div>
-                    </div>
 
-                    <button 
-                        className="login-btn-premium" 
-                        onClick={handleLogin}
-                        disabled={loading}
-                    >
-                        {loading ? (
-                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
-                                <Loader2 className="animate-spin" size={20} /> Authenticating...
+                        {error && <div className="error-pill">{error}</div>}
+
+                        <div className="input-vibrant">
+                            <label>Professional Email</label>
+                            <div className="input-field-wrap">
+                                <Mail size={22} />
+                                <input
+                                    type="email"
+                                    placeholder="name@hotel.com"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                />
                             </div>
-                        ) : (
-                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
-                                Sign In to Dashboard <ArrowRight size={20} />
+                        </div>
+
+                        <div className="input-vibrant">
+                            <label>Secure Password</label>
+                            <div className="input-field-wrap">
+                                <Lock size={22} />
+                                <input
+                                    type="password"
+                                    placeholder="••••••••"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    onKeyPress={(e) => e.key === 'Enter' && handleLogin()}
+                                />
                             </div>
-                        )}
-                    </button>
+                        </div>
 
-                    <div className="divider-modern">OR</div>
-
-                    <button 
-                        className="google-btn-modern" 
-                        onClick={handleGoogleLogin}
-                        disabled={loading}
-                    >
-                        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" width="20" />
-                        Continue with Google
-                    </button>
-
-                    <div style={{ marginTop: '32px', textAlign: 'center' }}>
                         <button 
-                            onClick={() => navigate('/role-select')}
-                            style={{ background: 'none', border: 'none', color: '#3f4c38', fontWeight: 700, cursor: 'pointer', fontSize: '0.9rem' }}
+                            className="btn-vibrant-primary" 
+                            onClick={handleLogin}
+                            disabled={loading}
                         >
-                            ← Back to Role Selection
+                            {loading ? (
+                                <Loader2 className="animate-spin" size={24} />
+                            ) : (
+                                <>Access Dashboard <ArrowRight size={22} /></>
+                            )}
                         </button>
+
+                        <div className="divider-modern">OR SIGN IN WITH</div>
+
+                        <button 
+                            className="google-btn-modern" 
+                            onClick={handleGoogleLogin}
+                            disabled={loading}
+                            style={{ padding: '18px', borderRadius: '20px' }}
+                        >
+                            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" width="22" />
+                            Google Workspace
+                        </button>
+
+                        <div style={{ marginTop: '40px', textAlign: 'center' }}>
+                            <button 
+                                onClick={() => navigate('/role-select')}
+                                style={{ background: 'none', border: 'none', color: '#10b981', fontWeight: 800, cursor: 'pointer', fontSize: '1rem', textDecoration: 'underline' }}
+                            >
+                                Change Access Role
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>

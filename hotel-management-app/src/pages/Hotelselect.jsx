@@ -43,68 +43,75 @@ export default function HotelSelect() {
 
     return (
         <div className="auth-shell">
-            <div className="hotel-selection-wrapper">
-                <div className="hotel-card-modern">
+            {/* Animated Background Blobs */}
+            <div className="bg-blob blob-1"></div>
+            <div className="bg-blob blob-2"></div>
+            <div className="bg-blob blob-3"></div>
+
+            <div className="auth-container-premium">
+                <div className="hotel-card-vibrant">
                     <div className="auth-header">
                         <button 
                             onClick={() => navigate('/role-select')}
-                            style={{ position: 'absolute', left: '0', top: '10px', background: 'none', border: 'none', color: '#64748b', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}
+                            style={{ background: 'none', border: 'none', color: '#10b981', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 700, marginBottom: '20px' }}
                         >
-                            <ArrowLeft size={18} /> Back
+                            <ArrowLeft size={20} /> Back
                         </button>
-                        <h1>Select Hotel</h1>
-                        <p>Accessing as <strong>{localStorage.getItem('role') || 'Staff'}</strong></p>
+                        <h1 style={{ fontSize: '2.5rem', fontWeight: 900, marginBottom: '8px' }}>Select Property</h1>
+                        <p>Currently accessing as <strong>{localStorage.getItem('role') || 'Staff'}</strong></p>
                     </div>
 
-                    <div className="search-bar-modern">
-                        <Search size={20} color="#64748b" />
+                    <div className="search-vibrant">
+                        <Search size={24} color="#64748b" />
                         <input
                             type="text"
-                            placeholder="Search by hotel name..."
+                            placeholder="Filter registered properties..."
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
+                            style={{ background: 'none', border: 'none', outline: 'none', width: '100%', fontSize: '1.1rem', fontWeight: 600 }}
                         />
                     </div>
 
                     <div className="hotel-list-modern">
                         {loading ? (
-                            <div style={{ textAlign: 'center', padding: '40px', color: '#64748b' }}>
-                                <Loader2 className="animate-spin" size={32} style={{ margin: '0 auto 12px' }} />
-                                <p>Finding workspaces...</p>
+                            <div style={{ textAlign: 'center', padding: '40px' }}>
+                                <Loader2 className="animate-spin" size={40} color="#10b981" />
+                                <p style={{ marginTop: '16px', fontWeight: 600, color: '#64748b' }}>Locating workspaces...</p>
                             </div>
                         ) : filteredHotels.length > 0 ? (
                             filteredHotels.map(hotel => (
                                 <div
                                     key={hotel.id}
-                                    className="hotel-item-modern"
+                                    className="hotel-item-vibrant"
                                     onClick={() => selectHotel(hotel)}
                                 >
-                                    <div className="hotel-icon-box">
-                                        <Building2 size={24} />
+                                    <div className="hotel-icon-vibrant">
+                                        <Building2 size={28} />
                                     </div>
 
                                     <div className="hotel-info-modern">
-                                        <h3>{hotel.hotelName}</h3>
-                                        <span>
-                                            <MapPin size={14} />
-                                            {hotel.location || 'Location not set'}
+                                        <h3 style={{ fontSize: '1.2rem' }}>{hotel.hotelName}</h3>
+                                        <span style={{ fontSize: '0.9rem' }}>
+                                            <MapPin size={16} />
+                                            {hotel.location || 'Industrial Zone'}
                                         </span>
                                     </div>
                                 </div>
                             ))
                         ) : (
                             <div style={{ textAlign: 'center', padding: '40px', color: '#64748b' }}>
-                                <p>No hotels found matching "{search}"</p>
+                                <p>No property found matching "{search}"</p>
                             </div>
                         )}
                     </div>
 
                     <button
-                        className="register-btn-modern"
+                        className="btn-vibrant-primary"
                         onClick={() => navigate('/register-hotel')}
+                        style={{ marginTop: '32px' }}
                     >
-                        <Plus size={20} />
-                        Register New Hotel
+                        <Plus size={24} />
+                        Register New Property
                     </button>
                 </div>
             </div>

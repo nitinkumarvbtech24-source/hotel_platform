@@ -45,25 +45,27 @@ export default function RoleSelect() {
 
     return (
         <div className="auth-shell">
-            <div className="role-select-wrapper">
+            {/* Animated Background Blobs */}
+            <div className="bg-blob blob-1"></div>
+            <div className="bg-blob blob-2"></div>
+            <div className="bg-blob blob-3"></div>
+
+            <div className="auth-container-premium">
                 <div className="auth-header">
-                    <h1>Select Your Role</h1>
-                    <p>Identify your position to access the Chillax Hotel Management OS</p>
+                    <h1 style={{ color: 'white' }}>Select Your Role</h1>
+                    <p style={{ color: 'rgba(255,255,255,0.7)' }}>Choose your workstation to access the Chillax Hotel Management OS</p>
                 </div>
 
-                <div className="role-grid-modern">
+                <div className="role-grid-vibrant">
                     {roles.map((role) => (
                         <div
                             key={role.key}
-                            className="role-card-modern"
+                            className="role-card-vibrant"
                             onClick={() => selectRole(role.key)}
                         >
                             <div className="icon-box">{role.icon}</div>
                             <h3>{role.label}</h3>
                             <p>{role.desc}</p>
-                            <div className="card-footer-action" style={{ marginTop: '20px', color: '#3f4c38', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', fontWeight: 700, fontSize: '0.8rem' }}>
-                                Continue <ArrowRight size={14} />
-                            </div>
                         </div>
                     ))}
                 </div>
