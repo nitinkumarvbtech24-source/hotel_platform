@@ -11,6 +11,11 @@ const firebaseConfig = {
     appId: import.meta.env.VITE_FIREBASE_APP_ID
 };
 
+// Validation check to prevent initialization error on Vercel/Production
+if (!firebaseConfig.apiKey) {
+    console.error("Firebase API Key is missing! Please set VITE_FIREBASE_API_KEY in your environment variables.");
+}
+
 const app = initializeApp(firebaseConfig);
 
 export const auth = getAuth(app);
