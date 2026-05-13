@@ -6,6 +6,7 @@ import { Building2, Search, ArrowRight, MapPin, AlertCircle } from 'lucide-react
 export default function Hotelselect({ onSelect }) {
     const [hotels, setHotels] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
+    const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
     useEffect(() => {
