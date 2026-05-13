@@ -12,12 +12,22 @@ import {
     where
 } from 'firebase/firestore';
 
+import { 
+    Mail, 
+    Lock, 
+    ArrowRight, 
+    Loader2,
+    CheckCircle2
+} from 'lucide-react';
+
 import { auth, googleProvider, db } from '../firebase';
+import '../Styles/auth.css';
 
 export default function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
 
     const navigate = useNavigate();
 
@@ -31,7 +41,6 @@ export default function Login() {
         const hotelId = localStorage.getItem('hotelId');
         const selectedRole = localStorage.getItem('role')?.toLowerCase();
 
-        // Case 1: Owner Login
         if (selectedRole === 'owner') {
             const q = query(
                 collection(db, 'users'),
@@ -45,9 +54,6 @@ export default function Login() {
             return true;
         }
 
-        // Case 2: Staff Login
-        // We check against the stored staff role (Manager, Waiter, KitchenStaff etc)
-        // Note: selectedRole from RoleSelect might be 'manager', 'waiter', 'chef'
         const staffQ = query(
             collection(db, 'hotels', hotelId, 'staff'),
             where('email', '==', email),
@@ -62,7 +68,6 @@ export default function Login() {
 
         const staffData = staffSnap.docs[0].data();
         
-        // Match the selected role with the registered staff role (case insensitive)
         if (staffData.role.toLowerCase() !== selectedRole && !(selectedRole === 'chef' && staffData.role === 'KitchenStaff')) {
              throw new Error(`Role mismatch: Registered as ${staffData.role}`);
         }
@@ -73,92 +78,136 @@ export default function Login() {
     };
 
     const handleLogin = async () => {
+        setLoading(true);
         try {
             setError('');
-
             const selectedRole = localStorage.getItem('role');
 
-            if (selectedRole === 'Owner') {
-                // Owners use Firebase Auth
+            if (selectedRole === 'owner') {
                 await signInWithEmailAndPassword(auth, email, password);
             }
             
-            // Verify access (for both Owner and Staff)
             await verifyUserAccess(email, password);
-
             navigate('/dashboard');
         } catch (err) {
             console.error(err);
             setError(err.message || 'Login failed');
+        } finally {
+            setLoading(false);
         }
     };
 
     const handleGoogleLogin = async () => {
+        setLoading(true);
         try {
             setError('');
-
             const userCred = await signInWithPopup(auth, googleProvider);
             await verifyUserAccess(userCred.user.email, ''); 
-
             navigate('/dashboard');
         } catch (err) {
             console.error(err);
             setError(err.message || 'Google login failed');
+        } finally {
+            setLoading(false);
         }
     };
 
     return (
-        <div className="login-shell">
-            <div className="login-container">
-                <div className="login-brand">
-                    <h1>Chillax</h1>
-                    <p>Order, Chill and Relax</p>
-                </div>
-
-                <div className="login-hero">
+        <div className="auth-shell">
+            <div className="login-split-container">
+                {/* Hero Side */}
+                <div className="login-hero-side">
                     <img
-                        src="https://images.unsplash.com/photo-1506744038136-46273834b3fb"
-                        alt="Hotel"
+                        src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80"
+                        alt="Premium Hotel"
                     />
+                    <div className="hero-content">
+                        <div className="brand-large">
+                            <span>CHILLAX HOTEL OS</span>
+                            <h1>Industry Standard Hospitality.</h1>
+                        </div>
+                        <div className="hero-quote">
+                            <p>"Efficiency is the foundation of great guest experiences."</p>
+                        </div>
+                    </div>
+                    <div className="hero-footer" style={{ position: 'relative', z-index: 2, fontSize: '0.8rem', opacity: 0.7 }}>
+                        © 2024 Chillax Systems. All rights reserved.
+                    </div>
                 </div>
 
-                <div className="login-card">
-                    <div className="login-tabs">
-                        <button className="active">Log In</button>
+                {/* Form Side */}
+                <div className="login-form-side">
+                    <div className="form-header">
+                        <h2>Welcome back</h2>
+                        <p>Accessing as <strong>{localStorage.getItem('role') || 'Staff'}</strong> at {localStorage.getItem('hotelName') || 'Hotel'}</p>
                     </div>
 
-                    <h2>Welcome Back</h2>
-                    <p>
-                        {localStorage.getItem('hotelName') || 'Selected Hotel'}
-                    </p>
+                    {error && <div className="error-pill">{error}</div>}
 
-                    {error && <div className="login-error">{error}</div>}
+                    <div className="input-group">
+                        <label>Email Address</label>
+                        <div className="input-wrapper">
+                            <Mail size={18} />
+                            <input
+                                type="email"
+                                placeholder="name@hotel.com"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                            />
+                        </div>
+                    </div>
 
-                    <input
-                        type="email"
-                        placeholder="Email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                    />
+                    <div className="input-group">
+                        <label>Password</label>
+                        <div className="input-wrapper">
+                            <Lock size={18} />
+                            <input
+                                type="password"
+                                placeholder="••••••••"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                onKeyPress={(e) => e.key === 'Enter' && handleLogin()}
+                            />
+                        </div>
+                    </div>
 
-                    <input
-                        type="password"
-                        placeholder="Password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                    />
-
-                    <button className="login-primary-btn" onClick={handleLogin}>
-                        Get Started
+                    <button 
+                        className="login-btn-premium" 
+                        onClick={handleLogin}
+                        disabled={loading}
+                    >
+                        {loading ? (
+                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                                <Loader2 className="animate-spin" size={20} /> Authenticating...
+                            </div>
+                        ) : (
+                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                                Sign In to Dashboard <ArrowRight size={20} />
+                            </div>
+                        )}
                     </button>
 
-                    <div className="login-divider">Or sign in with</div>
+                    <div className="divider-modern">OR</div>
 
-                    <button className="social-btn" onClick={handleGoogleLogin}>
+                    <button 
+                        className="google-btn-modern" 
+                        onClick={handleGoogleLogin}
+                        disabled={loading}
+                    >
+                        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" width="20" />
                         Continue with Google
                     </button>
+
+                    <div style={{ marginTop: '32px', textAlign: 'center' }}>
+                        <button 
+                            onClick={() => navigate('/role-select')}
+                            style={{ background: 'none', border: 'none', color: '#3f4c38', fontWeight: 700, cursor: 'pointer', fontSize: '0.9rem' }}
+                        >
+                            ← Back to Role Selection
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
     );
-}
+}
