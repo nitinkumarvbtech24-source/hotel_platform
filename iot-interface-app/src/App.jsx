@@ -1,146 +1,427 @@
 import { useState, useEffect } from 'react';
 import { 
-  Activity, 
-  LayoutDashboard, 
   Cpu, 
-  Wifi, 
-  Battery, 
+  Activity, 
+  UserPlus, 
+  History, 
   Settings, 
-  Terminal, 
-  AlertTriangle,
-  RefreshCcw,
-  Power
+  SmartphoneNfc, 
+  LogOut, 
+  Printer, 
+  Search,
+  CheckCircle,
+  AlertCircle,
+  User,
+  CreditCard
 } from 'lucide-react';
+import { auth, db } from './firebase';
+import { 
+  collection, 
+  query, 
+  where, 
+  onSnapshot, 
+  doc, 
+  getDoc, 
+  addDoc, 
+  getDocs, 
+  updateDoc,
+  serverTimestamp,
+  orderBy,
+  limit
+} from 'firebase/firestore';
+import Login from './pages/Login';
 import './index.css';
 
-const MOCK_DEVICES = [
-  { id: 'TBL-101', name: 'Table Tablet 1', type: 'Tablet', status: 'online', battery: 88, signal: 4 },
-  { id: 'TBL-102', name: 'Table Tablet 2', type: 'Tablet', status: 'online', battery: 42, signal: 3 },
-  { id: 'KDS-001', name: 'Kitchen Display', type: 'Station', status: 'online', battery: 100, signal: 5 },
-  { id: 'TBL-103', name: 'Table Tablet 3', type: 'Tablet', status: 'warning', battery: 12, signal: 2 },
-  { id: 'PRN-OFFICE', name: 'Admin Printer', type: 'Printer', status: 'offline', battery: 0, signal: 0 },
-  { id: 'GTW-MAIN', name: 'Main Gateway', type: 'Gateway', status: 'online', battery: 100, signal: 5 },
-];
-
 export default function App() {
-  const [devices, setDevices] = useState(MOCK_DEVICES);
-  const [activeZone, setActiveZone] = useState('All Devices');
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [hotelId, setHotelId] = useState(localStorage.getItem('hotelId'));
+  
+  const [activeTab, setActiveTab] = useState('scanner'); // 'scanner', 'register', 'history'
+  const [scannerStatus, setScannerStatus] = useState('waiting'); // 'waiting', 'fetching', 'found', 'not_found'
+  const [scannedUid, setScannedUid] = useState(null);
+  const [customerData, setCustomerData] = useState(null);
+  const [customerBills, setCustomerBills] = useState([]);
+  
+  const [historyLogs, setHistoryLogs] = useState([]);
+
+  // Registration Form State
+  const [regMobile, setRegMobile] = useState('');
+  const [regName, setRegName] = useState('');
+  const [regEmail, setRegEmail] = useState('');
+  const [regLoading, setRegLoading] = useState(false);
+
+  useEffect(() => {
+    const unsub = auth.onAuthStateChanged((u) => {
+      setUser(u);
+      setLoading(false);
+    });
+    return unsub;
+  }, []);
+
+  // Listen for physical scanner updates (Simulated via Firestore)
+  useEffect(() => {
+    if (!hotelId || !user) return;
+
+    const scannerRef = doc(db, 'hotels', hotelId, 'hardware', 'scanner');
+    const unsubScanner = onSnapshot(scannerRef, (snap) => {
+      if (snap.exists()) {
+        const data = snap.data();
+        if (data.currentUid && data.currentUid !== scannedUid) {
+          handleCardScanned(data.currentUid);
+        }
+      }
+    });
+
+    return unsubScanner;
+  }, [hotelId, user, scannedUid]);
+
+  // Fetch History
+  useEffect(() => {
+    if (!hotelId || activeTab !== 'history') return;
+
+    const q = query(
+      collection(db, 'hotels', hotelId, 'access_logs'),
+      orderBy('timestamp', 'desc'),
+      limit(50)
+    );
+
+    const unsubHistory = onSnapshot(q, (snap) => {
+      setHistoryLogs(snap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+    });
+
+    return unsubHistory;
+  }, [hotelId, activeTab]);
+
+  const handleCardScanned = async (uid) => {
+    setScannedUid(uid);
+    setScannerStatus('fetching');
+    setActiveTab('scanner');
+
+    try {
+      // 1. Check if card is registered
+      const cardSnap = await getDocs(query(collection(db, 'cards'), where('uid', '==', uid)));
+      
+      if (!cardSnap.empty) {
+        const cardData = cardSnap.docs[0].data();
+        // 2. Fetch Customer Info
+        const custDoc = await getDoc(doc(db, 'customers', cardData.customerId));
+        
+        if (custDoc.exists()) {
+          setCustomerData({ id: custDoc.id, ...custDoc.data() });
+          
+          // 3. Fetch TTB Bills
+          const billsSnap = await getDocs(query(
+            collection(db, 'ttb_bills'), 
+            where('customerId', '==', custDoc.id),
+            where('hotelId', '==', hotelId)
+          ));
+          setCustomerBills(billsSnap.docs.map(d => ({ id: d.id, ...d.data() })));
+          
+          setScannerStatus('found');
+          logAccess(uid, custDoc.id, 'success');
+        } else {
+          setScannerStatus('not_found');
+        }
+      } else {
+        setScannerStatus('not_found');
+        logAccess(uid, null, 'new_card');
+      }
+    } catch (err) {
+      console.error(err);
+      setScannerStatus('waiting');
+    }
+  };
+
+  const logAccess = async (uid, customerId, status) => {
+    await addDoc(collection(db, 'hotels', hotelId, 'access_logs'), {
+      uid,
+      customerId,
+      status,
+      timestamp: serverTimestamp()
+    });
+  };
+
+  const handleRegisterSearch = async () => {
+    if (!regMobile) return;
+    setRegLoading(true);
+    try {
+      const q = query(collection(db, 'customers'), where('mobile', '==', regMobile));
+      const snap = await getDocs(q);
+      if (!snap.empty) {
+        const data = snap.docs[0].data();
+        setRegName(data.name || data.userName);
+        setRegEmail(data.email);
+        setCustomerData({ id: snap.docs[0].id, ...data });
+      } else {
+        alert("No existing customer found with this mobile. Please enter details manually.");
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setRegLoading(false);
+    }
+  };
+
+  const finalizeRegistration = async () => {
+    if (!scannedUid || !regName || !regMobile) return;
+    setRegLoading(true);
+    try {
+      let custId = customerData?.id;
+      
+      // If new customer, create one
+      if (!custId) {
+        const newCust = await addDoc(collection(db, 'customers'), {
+          name: regName,
+          mobile: regMobile,
+          email: regEmail,
+          createdAt: serverTimestamp()
+        });
+        custId = newCust.id;
+      }
+
+      // Map Card to Customer
+      await addDoc(collection(db, 'cards'), {
+        uid: scannedUid,
+        customerId: custId,
+        hotelId: hotelId,
+        registeredAt: serverTimestamp()
+      });
+
+      alert("Card Registered Successfully!");
+      setScannerStatus('waiting');
+      setActiveTab('scanner');
+    } catch (err) {
+      alert(err.message);
+    } finally {
+      setRegLoading(false);
+    }
+  };
+
+  if (loading) return <div className="iot-loading">Initializing Hardware Gateway...</div>;
+  if (!user) return <Login onLoginSuccess={(d) => { setHotelId(d.hotelId); setUser(auth.currentUser); }} />;
 
   return (
     <div className="iot-shell">
-      {/* Sidebar Navigation */}
       <aside className="iot-sidebar">
-        <div className="iot-brand" style={{ marginBottom: '40px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', color: '#10b981' }}>
+        <div className="iot-brand">
+          <div className="brand-wrap">
             <Cpu size={32} />
-            <h2 style={{ fontSize: '1.4rem', fontWeight: 900, color: 'white', letterSpacing: '-1px' }}>IOT CORE</h2>
+            <h2>IOT CORE</h2>
           </div>
-          <span style={{ fontSize: '0.7rem', color: 'var(--iot-text-dim)', letterSpacing: '2px', fontWeight: 700 }}>SYSTEM VERSION 4.2.0</span>
+          <span className="version">TTB GATEWAY v4.2</span>
         </div>
 
-        <nav style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-          <NavItem icon={<LayoutDashboard size={20} />} label="Dashboard" active={activeZone === 'All Devices'} onClick={() => setActiveZone('All Devices')} />
-          <NavItem icon={<Activity size={20} />} label="System Health" />
-          <NavItem icon={<Wifi size={20} />} label="Network Nodes" />
-          <NavItem icon={<Terminal size={20} />} label="Logs & Console" />
-          <NavItem icon={<Settings size={20} />} label="Configuration" />
+        <nav className="iot-nav">
+          <button className={activeTab === 'scanner' ? 'active' : ''} onClick={() => setActiveTab('scanner')}>
+            <SmartphoneNfc size={20} /> TTB Scanner
+          </button>
+          <button className={activeTab === 'register' ? 'active' : ''} onClick={() => setActiveTab('register')}>
+            <UserPlus size={20} /> Register Card
+          </button>
+          <button className={activeTab === 'history' ? 'active' : ''} onClick={() => setActiveTab('history')}>
+            <History size={20} /> Access Logs
+          </button>
+          <button onClick={() => auth.signOut()}>
+            <LogOut size={20} /> Logout
+          </button>
         </nav>
 
-        <div style={{ marginTop: 'auto', padding: '20px', background: 'rgba(218, 54, 51, 0.1)', borderRadius: '12px', border: '1px solid rgba(218, 54, 51, 0.2)' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#da3633', fontSize: '0.8rem', fontWeight: 700 }}>
-            <AlertTriangle size={14} /> SYSTEM ALERT
+        <div className="sidebar-status-box">
+          <div className="status-header">
+            <Activity size={14} /> HARDWARE STATUS
           </div>
-          <p style={{ fontSize: '0.7rem', marginTop: '4px', color: 'var(--iot-text-dim)' }}>3 devices reporting low battery or signal.</p>
+          <div className="status-item">
+            <span>PN532 Reader</span>
+            <div className="status-dot online"></div>
+          </div>
+          <div className="status-item">
+            <span>Cloud Sync</span>
+            <div className="status-dot online"></div>
+          </div>
         </div>
       </aside>
 
-      {/* Main Content Area */}
       <main className="iot-main">
-        <header className="iot-header">
-          <div>
-            <h1>{activeZone}</h1>
-            <p style={{ color: 'var(--iot-text-dim)', fontSize: '0.9rem' }}>Real-time monitoring of all hotel endpoints</p>
-          </div>
-          <div style={{ display: 'flex', gap: '12px' }}>
-            <button style={{ padding: '10px 16px', background: 'var(--iot-card)', border: '1px solid var(--iot-border)', borderRadius: '8px', color: 'white', display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
-              <RefreshCcw size={18} /> Sync Devices
-            </button>
-          </div>
-        </header>
+        {activeTab === 'scanner' && (
+          <div className="scanner-view">
+            {scannerStatus === 'waiting' && (
+              <div className="scanner-container">
+                <div className="nfc-pulse-zone">
+                  <div className="pulse-ring"></div>
+                  <SmartphoneNfc size={80} />
+                </div>
+                <div className="scanner-text">
+                  <h2>READY TO SCAN</h2>
+                  <p>Please tap the customer's TTB Card on the reader to fetch bills.</p>
+                </div>
+              </div>
+            )}
 
-        {/* Device Grid */}
-        <div className="device-grid">
-          {devices.map(device => (
-            <DeviceNode key={device.id} device={device} />
-          ))}
-        </div>
+            {scannerStatus === 'fetching' && (
+              <div className="scanner-container">
+                <div className="nfc-pulse-zone">
+                  <div className="pulse-ring" style={{ animationDuration: '0.5s' }}></div>
+                  <Activity size={80} />
+                </div>
+                <div className="scanner-text">
+                  <h2>AUTHENTICATING...</h2>
+                  <p>Fetching card data from secure hotel cloud.</p>
+                </div>
+              </div>
+            )}
+
+            {scannerStatus === 'found' && customerData && (
+              <div className="card-result-view fadeInScale">
+                <div className="customer-hero-card">
+                   <div className="hero-top">
+                      <div className="cust-avatar">
+                        <User size={40} />
+                      </div>
+                      <div className="cust-meta">
+                        <h3>{customerData.name}</h3>
+                        <span>{customerData.mobile} • {customerData.email || 'No Email'}</span>
+                      </div>
+                      <div className="balance-tag">
+                        TOTAL TTB: ₹{customerBills.reduce((acc, b) => acc + (b.totalAmount || 0), 0)}
+                      </div>
+                   </div>
+                </div>
+
+                <div className="bill-section">
+                  <div className="section-header">
+                    <h2>UNPAID TTB BILLS</h2>
+                    <button className="iot-btn-outline" onClick={() => window.print()}>
+                      <Printer size={18} /> Print All
+                    </button>
+                  </div>
+
+                  <div className="ttb-bill-list">
+                    {customerBills.length === 0 ? (
+                      <div className="empty-bills">No pending TTB bills found.</div>
+                    ) : (
+                      customerBills.map(bill => (
+                        <div key={bill.id} className="ttb-bill-item">
+                          <div className="bill-main">
+                            <strong>#{bill.billNumber?.slice(-6)}</strong>
+                            <span>{new Date(bill.createdAt).toLocaleDateString()}</span>
+                          </div>
+                          <div className="bill-amount">₹{bill.totalAmount}</div>
+                          <button className="print-mini" onClick={() => window.print()}>
+                            <Printer size={14} />
+                          </button>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </div>
+                
+                <button className="reset-scanner-btn" onClick={() => setScannerStatus('waiting')}>
+                   Done / Next Customer
+                </button>
+              </div>
+            )}
+
+            {scannerStatus === 'not_found' && (
+              <div className="scanner-container">
+                 <div className="nfc-pulse-zone error">
+                    <AlertCircle size={80} color="#da3633" />
+                 </div>
+                 <div className="scanner-text">
+                    <h2>UNREGISTERED CARD</h2>
+                    <p>UID: <strong>{scannedUid}</strong> is not mapped to any customer.</p>
+                    <div style={{ display: 'flex', gap: '12px', marginTop: '24px', justifyContent: 'center' }}>
+                      <button className="iot-btn-primary" onClick={() => setActiveTab('register')}>
+                         Register This Card
+                      </button>
+                      <button className="iot-btn-outline" onClick={() => setScannerStatus('waiting')}>
+                         Cancel
+                      </button>
+                    </div>
+                 </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {activeTab === 'register' && (
+          <div className="register-view">
+             <div className="section-title">
+                <h1>Card Registration</h1>
+                <p>Link physical UID <strong>{scannedUid || 'WAITING...'}</strong> to a customer profile.</p>
+             </div>
+
+             <div className="register-form-iot">
+                <div className="form-group-iot">
+                   <label>Customer Mobile Number</label>
+                   <div className="search-input-wrap">
+                      <input 
+                        type="text" 
+                        placeholder="Search existing customer..." 
+                        value={regMobile}
+                        onChange={(e) => setRegMobile(e.target.value)}
+                      />
+                      <button onClick={handleRegisterSearch} disabled={regLoading}>
+                        <Search size={18} />
+                      </button>
+                   </div>
+                </div>
+
+                <div className="form-group-iot">
+                   <label>Customer Name</label>
+                   <input 
+                      type="text" 
+                      value={regName}
+                      onChange={(e) => setRegName(e.target.value)}
+                      placeholder="Full Name"
+                   />
+                </div>
+
+                <div className="form-group-iot">
+                   <label>Email Address (Optional)</label>
+                   <input 
+                      type="email" 
+                      value={regEmail}
+                      onChange={(e) => setRegEmail(e.target.value)}
+                      placeholder="customer@email.com"
+                   />
+                </div>
+
+                <button className="iot-btn-primary full" onClick={finalizeRegistration} disabled={regLoading}>
+                   {regLoading ? 'Processing...' : 'Authorize & Link Card'}
+                </button>
+             </div>
+          </div>
+        )}
+
+        {activeTab === 'history' && (
+          <div className="history-view">
+             <div className="section-title">
+                <h1>Access Logs</h1>
+                <p>Live hardware audit for TTB Card usage.</p>
+             </div>
+
+             <div className="history-table-iot">
+                <div className="history-header-row">
+                   <span>Timestamp</span>
+                   <span>UID</span>
+                   <span>Event</span>
+                   <span>Status</span>
+                </div>
+                {historyLogs.map(log => (
+                  <div key={log.id} className="history-log-row">
+                    <span>{log.timestamp?.toDate().toLocaleTimeString()}</span>
+                    <span>{log.uid}</span>
+                    <span>{log.status === 'success' ? 'Bill Access' : 'Registration Attempt'}</span>
+                    <span className={`status-pill ${log.status}`}>
+                       {log.status.toUpperCase()}
+                    </span>
+                  </div>
+                ))}
+             </div>
+          </div>
+        )}
       </main>
-    </div>
-  );
-}
-
-function NavItem({ icon, label, active, onClick }) {
-  return (
-    <div 
-      onClick={onClick}
-      style={{ 
-        display: 'flex', 
-        alignItems: 'center', 
-        gap: '12px', 
-        padding: '12px 16px', 
-        borderRadius: '10px', 
-        cursor: 'pointer',
-        background: active ? 'rgba(63, 76, 56, 0.2)' : 'transparent',
-        color: active ? '#10b981' : 'var(--iot-text)',
-        border: active ? '1px solid rgba(16, 185, 129, 0.2)' : '1px solid transparent',
-        transition: 'all 0.2s'
-      }}
-    >
-      {icon}
-      <span style={{ fontWeight: active ? 700 : 500, fontSize: '0.9rem' }}>{label}</span>
-    </div>
-  );
-}
-
-function DeviceNode({ device }) {
-  const statusColor = device.status === 'online' ? 'status-online-bg' : device.status === 'warning' ? 'status-warning-bg' : 'status-offline-bg';
-  
-  return (
-    <div className="device-node">
-      <div className={`device-status-pill ${statusColor} ${device.status === 'warning' ? 'animate-pulse-status' : ''}`}></div>
-      
-      <div className="node-header">
-        <div className="node-title">
-          <h3>{device.name}</h3>
-          <span>ID: {device.id} • {device.type}</span>
-        </div>
-        <div style={{ display: 'flex', gap: '8px' }}>
-          <button style={{ padding: '4px', background: 'none', border: 'none', color: 'var(--iot-text-dim)', cursor: 'pointer' }}>
-            <Power size={18} />
-          </button>
-        </div>
-      </div>
-
-      <div className="telemetry-row">
-        <div className="telemetry-item">
-          <div className="telemetry-label">Battery</div>
-          <div className="telemetry-value" style={{ display: 'flex', alignItems: 'center', gap: '4px', color: device.battery < 20 ? '#da3633' : 'inherit' }}>
-            <Battery size={14} /> {device.battery}%
-          </div>
-        </div>
-        <div className="telemetry-item">
-          <div className="telemetry-label">Signal</div>
-          <div className="telemetry-value" style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-            <Wifi size={14} /> {device.signal}/5
-          </div>
-        </div>
-        <div className="telemetry-item">
-          <div className="telemetry-label">Status</div>
-          <div className="telemetry-value" style={{ textTransform: 'capitalize', color: device.status === 'online' ? '#238636' : device.status === 'warning' ? '#d29922' : '#da3633' }}>
-            {device.status}
-          </div>
-        </div>
-      </div>
     </div>
   );
 }
