@@ -41,8 +41,11 @@ export default function App() {
   
   // Auth Flow State
   const [authState, setAuthState] = useState('hotel'); // 'hotel', 'role', 'login', 'dashboard'
-  const [selectedHotel, setSelectedHotel] = useState(null);
-  const [selectedRole, setSelectedRole] = useState(null);
+  const [selectedHotel, setSelectedHotel] = useState(() => {
+    const saved = localStorage.getItem('iot_selected_hotel');
+    return saved ? JSON.parse(saved) : null;
+  });
+  const [selectedRole, setSelectedRole] = useState(localStorage.getItem('iot_selected_role'));
 
   // App State
   const [activeTab, setActiveTab] = useState('scanner');
@@ -60,17 +63,30 @@ export default function App() {
 
   useEffect(() => {
     const unsub = auth.onAuthStateChanged((u) => {
-      if (u) {
-        setUser(u);
+      setUser(u);
+      if (u && selectedHotel) {
         setAuthState('dashboard');
+      } else if (u && !selectedHotel) {
+        // User logged in but no hotel selected (e.g. session remained but storage cleared)
+        setAuthState('hotel');
       } else {
-        setUser(null);
         setAuthState('hotel');
       }
       setLoading(false);
     });
     return unsub;
-  }, []);
+  }, [selectedHotel]);
+
+  // Persist Hotel & Role
+  useEffect(() => {
+    if (selectedHotel) localStorage.setItem('iot_selected_hotel', JSON.stringify(selectedHotel));
+    else localStorage.removeItem('iot_selected_hotel');
+  }, [selectedHotel]);
+
+  useEffect(() => {
+    if (selectedRole) localStorage.setItem('iot_selected_role', selectedRole);
+    else localStorage.removeItem('iot_selected_role');
+  }, [selectedRole]);
 
   // Hardware Scanner Listener (Scoped to selectedHotel)
   useEffect(() => {
