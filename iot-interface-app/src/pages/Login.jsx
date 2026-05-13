@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { auth, db } from '../firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, collection, query, where, getDocs } from 'firebase/firestore';
 import { Cpu, Lock, Mail, ArrowRight, ShieldCheck, ArrowLeft } from 'lucide-react';
 
 export default function Login({ hotel, role, onLoginSuccess, onBack }) {
@@ -16,36 +16,58 @@ export default function Login({ hotel, role, onLoginSuccess, onBack }) {
         setError('');
 
         try {
-            const userCredential = await signInWithEmailAndPassword(auth, email, password);
-            const user = userCredential.user;
+            let userData = null;
 
-            // Fetch user role from Firestore
-            const userDoc = await getDoc(doc(db, 'users', user.uid));
-            if (userDoc.exists()) {
-                const userData = userDoc.data();
-                
-                // VALIDATE HOTEL AND ROLE
-                if (userData.hotelId !== hotel.id) {
-                    setError(`Access Denied: Your account is not registered with ${hotel.hotelName}.`);
+            if (role === 'owner') {
+                const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+
+                // DIRECT LOOKUP: Get user profile by Document ID (UID)
+                const userDoc = await getDoc(doc(db, 'users', user.uid));
+
+                if (userDoc.exists()) {
+                    userData = { id: userDoc.id, ...userDoc.data() };
+                    
+                    // VALIDATE HOTEL (Owner must be linked to the selected hotel)
+                    if (userData.hotelId !== hotel.id) {
+                        setError(`Access Denied: Your account is not registered with ${hotel.hotelName}.`);
+                        await auth.signOut();
+                        return;
+                    }
+                } else {
+                    setError('Owner profile not found. Please ensure you are registered.');
                     await auth.signOut();
                     return;
                 }
+            } else {
+                // MANAGER LOGIN (Uses staff subcollection)
+                const staffQ = query(
+                    collection(db, 'hotels', hotel.id, 'staff'),
+                    where('email', '==', email),
+                    where('password', '==', password)
+                );
+                const staffSnap = await getDocs(staffQ);
 
-                if (userData.role !== role && userData.role !== 'owner') { // Owners can login as managers usually
-                    setError(`Access Denied: You are not authorized as a ${role.toUpperCase()}.`);
-                    await auth.signOut();
+                if (!staffSnap.empty) {
+                    userData = { id: staffSnap.docs[0].id, ...staffSnap.docs[0].data() };
+                    if (userData.role.toLowerCase() !== 'manager') {
+                        setError(`Access Denied: You are registered as ${userData.role.toUpperCase()}.`);
+                        return;
+                    }
+                } else {
+                    setError('Invalid Manager credentials.');
                     return;
                 }
+            }
 
-                localStorage.setItem('hotelId', userData.hotelId);
-                localStorage.setItem('hotelName', userData.hotelName);
+            if (userData) {
+                localStorage.setItem('hotelId', hotel.id);
+                localStorage.setItem('hotelName', hotel.hotelName);
                 localStorage.setItem('userRole', userData.role);
                 onLoginSuccess(userData);
-            } else {
-                setError('User profile not found in system.');
-                await auth.signOut();
             }
         } catch (err) {
+            console.error(err);
             setError('Authentication Failed: Invalid credentials or network error.');
         } finally {
             setLoading(false);
