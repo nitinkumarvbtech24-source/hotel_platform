@@ -1,17 +1,17 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
-import RoleSelect from './pages/RoleSelect';
-import HotelSelect from './pages/HotelSelect';
+import RoleSelect from './pages/Roleselect';
+import HotelSelect from './pages/Hotelselect';
 import Login from './pages/Login';
-import RegisterHotel from './pages/RegisterHotel';
+import RegisterHotel from './pages/Registerhotel';
 
 import Dashboard from './pages/Dashboard';
 import MenuManagement from './pages/MenuManagement';
 import Bills from './pages/Bills';
-import WaiterSection from './pages/WaiterSection';
-import ChefCorner from './pages/ChefCorner';
-import OnlineOrders from './pages/OnlineOrders';
-import TTBBills from './pages/TTBBills';
+import WaiterSection from './pages/Waitersection';
+import ChefCorner from './pages/Chefcorner';
+import OnlineOrders from './pages/Onlineorders';
+import TTBBills from './pages/TTBbills';
 import Settings from './pages/Settings';
 
 import ManagementLayout from './components/ManagementLayout';
