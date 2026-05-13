@@ -64,6 +64,7 @@ export default function Login({ onLoginSuccess }) {
                                 placeholder="manager@chillax.com"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
+                                autoComplete="email"
                                 required
                             />
                         </div>
@@ -78,6 +79,7 @@ export default function Login({ onLoginSuccess }) {
                                 placeholder="••••••••"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
+                                autoComplete="current-password"
                                 required
                             />
                         </div>

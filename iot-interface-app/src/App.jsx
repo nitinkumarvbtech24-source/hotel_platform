@@ -360,6 +360,7 @@ export default function App() {
                         placeholder="Search existing customer..." 
                         value={regMobile}
                         onChange={(e) => setRegMobile(e.target.value)}
+                        autoComplete="tel"
                       />
                       <button onClick={handleRegisterSearch} disabled={regLoading}>
                         <Search size={18} />
@@ -374,6 +375,7 @@ export default function App() {
                       value={regName}
                       onChange={(e) => setRegName(e.target.value)}
                       placeholder="Full Name"
+                      autoComplete="name"
                    />
                 </div>
 
@@ -384,6 +386,7 @@ export default function App() {
                       value={regEmail}
                       onChange={(e) => setRegEmail(e.target.value)}
                       placeholder="customer@email.com"
+                      autoComplete="email"
                    />
                 </div>
 
