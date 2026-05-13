@@ -119,91 +119,75 @@ export default function Login() {
             <div className="bg-blob blob-2"></div>
             <div className="bg-blob blob-3"></div>
 
-            <div className="auth-container-premium">
-                <div className="login-vibrant-container">
-                    {/* Hero Side */}
-                    <div className="login-hero-vibrant">
-                        <div className="brand-vibrant">
-                            <span>CHILLAX HOTEL OS</span>
-                            <h1>Hospitality. Redefined.</h1>
-                        </div>
-                        <div className="hero-quote">
-                            <p style={{ color: 'white' }}>"Precision in management leads to excellence in service."</p>
-                        </div>
-                        <div style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.8rem', fontWeight: 600 }}>
-                            TRUSTED BY 500+ HOTELS GLOBALLY
-                        </div>
+            <div className="login-centered-wrapper">
+                <div className="login-brand-header">
+                    <h1>Chillax OS</h1>
+                    <p>Access your hotel management dashboard</p>
+                </div>
+
+                {error && <div className="error-pill" style={{ marginBottom: '24px' }}>{error}</div>}
+
+                <div className="input-vibrant">
+                    <label style={{ color: 'rgba(255,255,255,0.8)' }}>Email Address</label>
+                    <div className="input-field-wrap">
+                        <Mail size={20} color="#10b981" />
+                        <input
+                            type="email"
+                            placeholder="name@hotel.com"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            style={{ background: 'rgba(255,255,255,0.05)', color: 'white', border: '1px solid rgba(255,255,255,0.1)' }}
+                        />
                     </div>
+                </div>
 
-                    {/* Form Side */}
-                    <div className="login-form-vibrant">
-                        <div className="form-header">
-                            <h2 style={{ fontSize: '2.5rem', marginBottom: '8px' }}>Login</h2>
-                            <p>Enter your credentials to access your dashboard</p>
-                        </div>
-
-                        {error && <div className="error-pill">{error}</div>}
-
-                        <div className="input-vibrant">
-                            <label>Professional Email</label>
-                            <div className="input-field-wrap">
-                                <Mail size={22} />
-                                <input
-                                    type="email"
-                                    placeholder="name@hotel.com"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                />
-                            </div>
-                        </div>
-
-                        <div className="input-vibrant">
-                            <label>Secure Password</label>
-                            <div className="input-field-wrap">
-                                <Lock size={22} />
-                                <input
-                                    type="password"
-                                    placeholder="••••••••"
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                    onKeyPress={(e) => e.key === 'Enter' && handleLogin()}
-                                />
-                            </div>
-                        </div>
-
-                        <button 
-                            className="btn-vibrant-primary" 
-                            onClick={handleLogin}
-                            disabled={loading}
-                        >
-                            {loading ? (
-                                <Loader2 className="animate-spin" size={24} />
-                            ) : (
-                                <>Access Dashboard <ArrowRight size={22} /></>
-                            )}
-                        </button>
-
-                        <div className="divider-modern">OR SIGN IN WITH</div>
-
-                        <button 
-                            className="google-btn-modern" 
-                            onClick={handleGoogleLogin}
-                            disabled={loading}
-                            style={{ padding: '18px', borderRadius: '20px' }}
-                        >
-                            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" width="22" />
-                            Google Workspace
-                        </button>
-
-                        <div style={{ marginTop: '40px', textAlign: 'center' }}>
-                            <button 
-                                onClick={() => navigate('/role-select')}
-                                style={{ background: 'none', border: 'none', color: '#10b981', fontWeight: 800, cursor: 'pointer', fontSize: '1rem', textDecoration: 'underline' }}
-                            >
-                                Change Access Role
-                            </button>
-                        </div>
+                <div className="input-vibrant">
+                    <label style={{ color: 'rgba(255,255,255,0.8)' }}>Password</label>
+                    <div className="input-field-wrap">
+                        <Lock size={20} color="#10b981" />
+                        <input
+                            type="password"
+                            placeholder="••••••••"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            onKeyPress={(e) => e.key === 'Enter' && handleLogin()}
+                            style={{ background: 'rgba(255,255,255,0.05)', color: 'white', border: '1px solid rgba(255,255,255,0.1)' }}
+                        />
                     </div>
+                </div>
+
+                <button 
+                    className="btn-vibrant-primary" 
+                    onClick={handleLogin}
+                    disabled={loading}
+                    style={{ marginTop: '20px' }}
+                >
+                    {loading ? (
+                        <Loader2 className="animate-spin" size={24} />
+                    ) : (
+                        <>Sign In <ArrowRight size={22} /></>
+                    )}
+                </button>
+
+                <div className="divider-modern" style={{ color: 'rgba(255,255,255,0.5)', margin: '24px 0' }}>OR</div>
+
+                <button 
+                    className="google-btn-modern" 
+                    onClick={handleGoogleLogin}
+                    disabled={loading}
+                    style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.1)', color: 'white' }}
+                >
+                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" width="20" />
+                    Continue with Google
+                </button>
+
+                <div style={{ marginTop: '32px', textAlign: 'center' }}>
+                    <button 
+                        onClick={() => navigate('/role-select')}
+                        style={{ background: 'none', border: 'none', color: '#10b981', fontWeight: 800, cursor: 'pointer', fontSize: '0.95rem' }}
+                    >
+                        ← Back to Role Selection
+                    </button>
                 </div>
             </div>
         </div>

@@ -138,50 +138,37 @@
     line-height: 1.6;
 }
 
-/* Split Login Layout */
-.login-vibrant-container {
-    display: grid;
-    grid-template-columns: 1.2fr 1fr;
-    background: rgba(255, 255, 255, 0.03);
+/* Centered Card Layout (Matching Customer App Aesthetic) */
+.login-centered-wrapper {
+    width: 100%;
+    max-width: 450px;
+    background: var(--glass-bg);
     backdrop-filter: blur(30px);
     border-radius: 40px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    overflow: hidden;
-    box-shadow: 0 50px 100px rgba(0,0,0,0.5);
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-.login-hero-vibrant {
+    border: 1px solid var(--glass-border);
+    padding: 60px 40px;
+    box-shadow: 0 40px 100px rgba(0,0,0,0.4);
     position: relative;
-    padding: 80px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
-    background-size: cover;
-    background-position: center;
+    z-index: 10;
+    animation: fadeInScale 0.8s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.brand-vibrant h1 {
-    font-size: 4rem;
+.login-brand-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.login-brand-header h1 {
+    font-size: 2.5rem;
     font-weight: 900;
     color: white;
-    letter-spacing: -2px;
-    line-height: 0.9;
+    letter-spacing: -1px;
+    margin-bottom: 8px;
 }
 
-.brand-vibrant span {
-    color: var(--primary-glow);
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 6px;
-    font-size: 0.9rem;
-}
-
-.login-form-vibrant {
-    padding: 80px;
-    background: white;
+.login-brand-header p {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 1rem;
 }
 
 .input-vibrant {
