@@ -1558,12 +1558,69 @@
     justify-content: flex-end;
 }
 
+/* Mobile Bottom Navigation Bar */
+.mobile-bottom-nav {
+    display: none;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 70px;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(20px);
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    z-index: 2000;
+    justify-content: space-around;
+    align-items: center;
+    padding: 0 10px;
+}
+
+.mobile-nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    background: none;
+    border: none;
+    color: #64748b;
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    flex: 1;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.mobile-nav-item svg {
+    color: #94a3b8;
+}
+
+.mobile-nav-item.active {
+    color: var(--primary-olive);
+}
+
+.mobile-nav-item.active svg {
+    color: var(--primary-olive);
+    transform: translateY(-2px);
+}
+
+.mobile-nav-item.logout {
+    color: #ef4444;
+}
+
+.mobile-nav-item.logout svg {
+    color: #ef4444;
+}
+
 @media (max-width: 1024px) {
     :root { --sidebar-width: 0px; }
     .sidebar { display: none; }
+    .mobile-bottom-nav { display: flex; }
     .dashboard-main, .menu-wrapper, .waiter-dashboard, .chef-dashboard {
         margin-left: 0 !important;
         padding: 16px !important;
+        padding-bottom: 100px !important; /* Space for bottom nav */
     }
 }
 

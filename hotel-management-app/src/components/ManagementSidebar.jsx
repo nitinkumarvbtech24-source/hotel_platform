@@ -77,33 +77,56 @@ export default function ManagementSidebar() {
     };
 
     return (
-        <aside className="sidebar">
-            <div className="sidebar-logo">
-                <h2>Chillax</h2>
-                <p>{hotelName}</p>
-            </div>
+        <>
+            {/* Desktop Sidebar */}
+            <aside className="sidebar">
+                <div className="sidebar-logo">
+                    <h2>Chillax</h2>
+                    <p>{hotelName}</p>
+                </div>
 
-            <nav className="sidebar-menu">
+                <nav className="sidebar-menu">
+                    {menuItems
+                        .filter(item => item.roles.includes(role))
+                        .map(item => (
+                            <button
+                                key={item.label}
+                                className={`sidebar-item ${location.pathname === item.path ? 'active' : ''}`}
+                                onClick={() => navigate(item.path)}
+                            >
+                                {item.icon}
+                                <span>{item.label}</span>
+                            </button>
+                        ))}
+                </nav>
+
+                <div className="logout-btn-wrap">
+                    <button className="logout-btn" onClick={logout}>
+                        <LogOut size={18} />
+                        Logout
+                    </button>
+                </div>
+            </aside>
+
+            {/* Mobile Bottom Navigation */}
+            <nav className="mobile-bottom-nav">
                 {menuItems
                     .filter(item => item.roles.includes(role))
                     .map(item => (
                         <button
                             key={item.label}
-                            className={`sidebar-item ${location.pathname === item.path ? 'active' : ''}`}
+                            className={`mobile-nav-item ${location.pathname === item.path ? 'active' : ''}`}
                             onClick={() => navigate(item.path)}
                         >
                             {item.icon}
-                            <span>{item.label}</span>
+                            <span>{item.label.split(' ')[0]}</span> {/* Show only first word on mobile */}
                         </button>
                     ))}
-            </nav>
-
-            <div className="logout-btn-wrap">
-                <button className="logout-btn" onClick={logout}>
-                    <LogOut size={18} />
-                    Logout
+                <button className="mobile-nav-item logout" onClick={logout}>
+                    <LogOut size={20} />
+                    <span>Exit</span>
                 </button>
-            </div>
-        </aside>
+            </nav>
+        </>
     );
 }
