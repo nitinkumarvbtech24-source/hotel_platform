@@ -18,7 +18,7 @@ import { motion } from 'framer-motion';
 
 import BillPreviewModal from '../components/BillPreviewModal';
 import ManagementSidebar from '../components/ManagementSidebar';
-import '../styles/bills.css';
+import '../Styles/bills.css';
 import '../Styles/dashboard.css';
 
 export default function Bills() {
