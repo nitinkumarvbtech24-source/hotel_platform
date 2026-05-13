@@ -1,12 +1,12 @@
 /* High-End Industrial Auth Design System */
 :root {
-    --primary-glow: #10b981;
-    --secondary-glow: #3b82f6;
-    --industrial-olive: #3f4c38;
-    --glass-bg: rgba(255, 255, 255, 0.7);
-    --glass-border: rgba(255, 255, 255, 0.4);
-    --text-main: #0f172a;
-    --text-dim: #475569;
+    --primary-glow: #f59e0b; /* Golden Amber for High Contrast */
+    --secondary-glow: #10b981;
+    --industrial-olive: #3f4c38; /* The core theme color */
+    --glass-bg: rgba(255, 255, 255, 0.08);
+    --glass-border: rgba(255, 255, 255, 0.15);
+    --text-main: #ffffff;
+    --text-dim: rgba(255, 255, 255, 0.7);
 }
 
 @keyframes fadeInScale {
@@ -21,40 +21,33 @@
     100% { transform: translate(0, 0) rotate(0deg); }
 }
 
-@keyframes pulse-glow {
-    0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
-    70% { box-shadow: 0 0 0 15px rgba(16, 185, 129, 0); }
-    100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
-}
-
 .auth-shell {
     min-height: 100vh;
     width: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
-    background: #0f172a; /* Deep Dark Industrial Background */
+    background: var(--industrial-olive); /* Set to requested Olive Green */
     position: relative;
     overflow: hidden;
     padding: 24px;
     font-family: 'Outfit', sans-serif;
 }
 
-/* Animated Background Blobs */
+/* Background Blobs adjusted for Olive */
 .bg-blob {
     position: absolute;
-    width: 500px;
-    height: 500px;
+    width: 600px;
+    height: 600px;
     border-radius: 50%;
-    filter: blur(80px);
-    opacity: 0.15;
+    filter: blur(100px);
+    opacity: 0.2;
     z-index: 0;
-    animation: float 20s infinite ease-in-out;
+    animation: float 25s infinite ease-in-out;
 }
 
-.blob-1 { background: var(--primary-glow); top: -100px; right: -100px; animation-delay: 0s; }
-.blob-2 { background: var(--secondary-glow); bottom: -100px; left: -100px; animation-delay: -5s; }
-.blob-3 { background: #f59e0b; top: 40%; left: 30%; width: 300px; height: 300px; animation-delay: -10s; }
+.blob-1 { background: #10b981; top: -150px; right: -150px; }
+.blob-2 { background: #f59e0b; bottom: -150px; left: -150px; animation-delay: -5s; }
 
 .auth-container-premium {
     width: 100%;
@@ -223,8 +216,8 @@
 .btn-vibrant-primary {
     width: 100%;
     padding: 20px;
-    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-    color: white;
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); /* Contrasting Gold/Amber */
+    color: #3f4c38; /* Dark text for contrast on gold */
     border: none;
     border-radius: 20px;
     font-size: 1.1rem;
@@ -235,18 +228,38 @@
     align-items: center;
     justify-content: center;
     gap: 12px;
-    box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3);
+    box-shadow: 0 10px 30px rgba(245, 158, 11, 0.3);
 }
 
 .btn-vibrant-primary:hover {
     transform: translateY(-5px);
-    box-shadow: 0 20px 40px rgba(16, 185, 129, 0.5);
+    box-shadow: 0 20px 40px rgba(245, 158, 11, 0.5);
     filter: brightness(1.1);
+}
+
+.auth-header {
+    text-align: center;
+    margin-bottom: 48px;
+    color: white;
+}
+
+.auth-header h1 {
+    font-size: 2.5rem;
+    font-weight: 900;
+    margin-bottom: 8px;
+    letter-spacing: -1px;
+}
+
+.auth-header p {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 1.1rem;
 }
 
 /* Hotel Select List */
 .hotel-card-vibrant {
-    background: white;
+    background: var(--glass-bg);
+    backdrop-filter: blur(30px);
+    border: 1px solid var(--glass-border);
     border-radius: 40px;
     padding: 60px;
     max-width: 700px;
