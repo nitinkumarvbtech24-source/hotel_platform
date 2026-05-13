@@ -19,6 +19,12 @@ body,
     overflow: hidden;
 }
 
+@media (max-width: 768px) {
+    .customer-dashboard-layout {
+        flex-direction: column;
+    }
+}
+
 /* --- SIDEBAR --- */
 .customer-sidebar {
     width: 280px;
@@ -33,6 +39,50 @@ body,
     justify-content: space-between;
     box-shadow: 8px 0 30px rgba(0, 0, 0, 0.15);
     box-sizing: border-box;
+    transition: 0.3s;
+}
+
+@media (max-width: 768px) {
+    .customer-sidebar {
+        width: 100%;
+        min-width: 100%;
+        height: auto;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        z-index: 1000;
+        padding: 8px;
+        flex-direction: row;
+        background: #111827;
+        border-radius: 20px 20px 0 0;
+        box-shadow: 0 -8px 30px rgba(0,0,0,0.2);
+    }
+    .sidebar-brand, .sidebar-user, .sidebar-logout-btn {
+        display: none;
+    }
+    .sidebar-nav {
+        flex-direction: row;
+        justify-content: space-around;
+        width: 100%;
+        gap: 4px;
+    }
+    .sidebar-nav-btn {
+        flex-direction: column;
+        padding: 8px;
+        gap: 4px;
+        font-size: 0.7rem;
+        text-align: center;
+        border-radius: 12px;
+    }
+    .sidebar-nav-btn svg {
+        width: 20px;
+        height: 20px;
+    }
+    .cart-badge {
+        position: absolute;
+        top: 2px;
+        right: 10px;
+    }
 }
 
 .sidebar-brand h2 {
@@ -163,6 +213,16 @@ body,
     box-sizing: border-box;
     width: 100%;
     min-width: 0;
+}
+
+@media (max-width: 768px) {
+    .customer-dashboard-main {
+        padding: 16px;
+        padding-bottom: 90px; /* Space for bottom nav */
+    }
+    .customer-header h1 {
+        font-size: 1.5rem;
+    }
 }
 
 .customer-header {

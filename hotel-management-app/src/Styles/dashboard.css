@@ -132,6 +132,73 @@
     flex: 1;
     padding: 40px;
     min-width: 0;
+    transition: margin-left 0.3s ease;
+}
+
+/* --- RESPONSIVENESS --- */
+@media (max-width: 1024px) {
+    :root {
+        --sidebar-width: 80px;
+    }
+    .sidebar-logo h2, .sidebar-logo p, .sidebar-item span {
+        display: none;
+    }
+    .sidebar {
+        align-items: center;
+    }
+    .sidebar-item {
+        justify-content: center;
+        padding: 14px;
+    }
+}
+
+@media (max-width: 768px) {
+    .dashboard-layout {
+        flex-direction: column;
+    }
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: fixed;
+        bottom: 0;
+        top: auto;
+        flex-direction: row;
+        padding: 8px;
+        box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
+        border-radius: 20px 20px 0 0;
+    }
+    .sidebar-logo, .logout-btn-wrap {
+        display: none;
+    }
+    .sidebar-menu {
+        flex-direction: row;
+        justify-content: space-around;
+        width: 100%;
+        overflow-x: auto;
+    }
+    .sidebar-item {
+        flex-direction: column;
+        gap: 4px;
+        padding: 8px;
+        font-size: 0.7rem;
+    }
+    .sidebar-item span {
+        display: block;
+    }
+    .dashboard-main {
+        margin-left: 0;
+        padding: 16px;
+        padding-bottom: 100px; /* Space for bottom nav */
+    }
+    .dashboard-topbar {
+        padding: 20px;
+        flex-direction: column;
+        gap: 16px;
+        text-align: center;
+    }
+    .welcome-text h1 {
+        font-size: 1.5rem;
+    }
 }
 
 .dashboard-wrapper {
@@ -193,6 +260,18 @@
     grid-template-columns: repeat(4, 1fr);
     gap: 24px;
     margin-bottom: 24px;
+}
+
+@media (max-width: 1200px) {
+    .main-stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    .main-stats-grid {
+        grid-template-columns: 1fr;
+    }
 }
 
 .stat-card.primary {
@@ -261,6 +340,12 @@
     grid-template-columns: repeat(3, 1fr);
     gap: 24px;
     margin-bottom: 40px;
+}
+
+@media (max-width: 900px) {
+    .breakdown-grid {
+        grid-template-columns: 1fr;
+    }
 }
 
 .mini-stat-card {
@@ -461,6 +546,12 @@
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
     gap: 24px;
+}
+
+@media (max-width: 600px) {
+    .order-queue-grid {
+        grid-template-columns: 1fr;
+    }
 }
 
 .chef-order-card {
