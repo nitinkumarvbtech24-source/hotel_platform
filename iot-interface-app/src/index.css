@@ -1,40 +1,151 @@
-@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
-
+/* IoT Command Center Design System */
 :root {
-  --bg-color: #050505;
-  --panel-bg: rgba(10, 20, 30, 0.8);
-  --cyan: #0ff;
-  --cyan-dim: rgba(0, 255, 255, 0.2);
-  --green: #0f0;
-  --text-main: #e0e0e0;
+    --iot-bg: #0a0c10;
+    --iot-sidebar: #0f1218;
+    --iot-card: #161b22;
+    --iot-border: #30363d;
+    --iot-text: #c9d1d9;
+    --iot-text-dim: #8b949e;
+    --iot-accent: #3f4c38; /* Olive accent from management app */
+    
+    --status-online: #238636;
+    --status-offline: #da3633;
+    --status-warning: #d29922;
+    --status-active: #58a6ff;
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 body {
-  font-family: 'Share Tech Mono', monospace;
-  background-color: var(--bg-color);
-  color: var(--text-main);
-  background-image: radial-gradient(circle at 50% 50%, #111 0%, #000 100%);
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+    background-color: var(--iot-bg);
+    color: var(--iot-text);
+    font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    overflow: hidden;
 }
-.hub-container {
-  width: 90%;
-  max-width: 1000px;
-  background: var(--panel-bg);
-  border: 1px solid var(--cyan-dim);
-  box-shadow: 0 0 20px var(--cyan-dim);
-  padding: 2rem;
-  border-radius: 12px;
-  position: relative;
+
+.iot-shell {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
 }
-.hub-container::before { content: ''; position: absolute; top: -1px; left: 10%; width: 80%; height: 2px; background: var(--cyan); box-shadow: 0 0 10px var(--cyan); }
-.header { text-align: center; margin-bottom: 3rem; text-transform: uppercase; letter-spacing: 4px; color: var(--cyan); text-shadow: 0 0 8px var(--cyan); }
-.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; }
-.sensor-card { background: rgba(0,0,0,0.5); border: 1px solid var(--cyan-dim); padding: 1.5rem; border-radius: 8px; text-align: center; transition: 0.3s; }
-.sensor-card:hover { border-color: var(--cyan); box-shadow: inset 0 0 15px var(--cyan-dim); }
-.value { font-size: 2.5rem; color: var(--cyan); margin: 1rem 0; text-shadow: 0 0 5px var(--cyan); }
-.label { font-size: 0.8rem; text-transform: uppercase; color: #888; letter-spacing: 1px; }
-.status-dot { display: inline-block; width: 8px; height: 8px; background: var(--green); border-radius: 50%; box-shadow: 0 0 8px var(--green); margin-right: 8px; }
+
+.iot-sidebar {
+    width: 280px;
+    background: var(--iot-sidebar);
+    border-right: 1px solid var(--iot-border);
+    display: flex;
+    flex-direction: column;
+    padding: 24px;
+}
+
+.iot-main {
+    flex: 1;
+    overflow-y: auto;
+    padding: 32px;
+    background: radial-gradient(circle at top right, rgba(63, 76, 56, 0.05), transparent);
+}
+
+.iot-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32px;
+}
+
+.iot-header h1 {
+    font-size: 1.8rem;
+    font-weight: 800;
+    letter-spacing: -1px;
+}
+
+/* Device Nodes */
+.device-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.device-node {
+    background: var(--iot-card);
+    border: 1px solid var(--iot-border);
+    border-radius: 16px;
+    padding: 20px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.device-node:hover {
+    border-color: var(--iot-text-dim);
+    transform: translateY(-4px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+}
+
+.device-status-pill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+}
+
+.status-online-bg { background: var(--status-online); }
+.status-offline-bg { background: var(--status-offline); }
+.status-warning-bg { background: var(--status-warning); }
+
+.node-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 16px;
+}
+
+.node-title h3 {
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.node-title span {
+    font-size: 0.8rem;
+    color: var(--iot-text-dim);
+    font-family: 'JetBrains Mono', monospace;
+}
+
+.telemetry-row {
+    display: flex;
+    gap: 16px;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--iot-border);
+}
+
+.telemetry-item {
+    flex: 1;
+}
+
+.telemetry-label {
+    font-size: 0.7rem;
+    color: var(--iot-text-dim);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+}
+
+.telemetry-value {
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+/* Animations */
+.animate-pulse-status {
+    animation: pulse 2s infinite ease-in-out;
+}
