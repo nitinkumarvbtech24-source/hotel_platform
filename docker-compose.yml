@@ -1,0 +1,22 @@
+services:
+  customer-app:
+    build:
+      context: ./customer-app
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"
+    networks:
+      - hotel-network
+
+  management-app:
+    build:
+      context: ./hotel-management-app
+      dockerfile: Dockerfile
+    ports:
+      - "3001:80"
+    networks:
+      - hotel-network
+
+networks:
+  hotel-network:
+    driver: bridge

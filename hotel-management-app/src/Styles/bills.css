@@ -1,0 +1,1316 @@
+/* ===============================
+   BILLING PAGE BASE
+================================ */
+.bills-page {
+    min-height: 100vh;
+    padding: 32px;
+    background:
+        radial-gradient(circle at top left, #ede9fe 0%, #f8fafc 35%),
+        radial-gradient(circle at top right, #dbeafe 0%, transparent 35%);
+    position: relative;
+}
+
+/* ===============================
+   HEADER
+================================ */
+.bills-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-bottom: 28px;
+    padding: 28px 32px;
+    border-radius: 28px;
+    background: linear-gradient(135deg,
+            var(--primary-olive) 0%,
+            var(--primary-olive-dark) 100%);
+    color: white;
+    box-shadow: 0 18px 40px rgba(63, 76, 56, 0.15);
+}
+
+.bills-header h1 {
+    font-size: 2rem;
+    font-weight: 800;
+    margin-bottom: 6px;
+}
+
+.bills-header p {
+    opacity: .9;
+}
+
+/* ===============================
+   BUTTONS
+================================ */
+.quick-menu-btn,
+.generate-bill-btn,
+.print-btn,
+.confirm-btn {
+    border: none;
+    cursor: pointer;
+    border-radius: 16px;
+    padding: 14px 22px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: .25s ease;
+}
+
+.quick-menu-btn,
+.generate-bill-btn,
+.confirm-btn,
+.primary-btn {
+    background: var(--primary-olive);
+    color: white;
+}
+
+.quick-menu-btn:active,
+.generate-bill-btn:active,
+.confirm-btn:active,
+.primary-btn:active {
+    background: #1a2e05 !important; /* Deep contrasting forest green when pressed */
+    transform: scale(0.96);
+    box-shadow: inset 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.print-btn {
+    background: #111827;
+    color: white;
+}
+
+.quick-menu-btn:hover,
+.generate-bill-btn:hover,
+.print-btn:hover,
+.confirm-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, .15);
+}
+
+/* ===============================
+   FORM CARD
+================================ */
+.billing-form-card {
+    background: rgba(255, 255, 255, .8);
+    backdrop-filter: blur(18px);
+    border: 1px solid rgba(255, 255, 255, .5);
+    border-radius: 24px;
+    padding: 24px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 18px;
+    margin-bottom: 28px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, .05);
+}
+
+.billing-form-card input,
+.billing-form-card select {
+    padding: 14px 16px;
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    font-size: 15px;
+}
+
+/* ===============================
+   FLOATING BILL CART
+================================ */
+.floating-bill-cart {
+    position: fixed;
+    right: 24px;
+    top: 140px;
+    width: 360px;
+    max-height: 80vh;
+    overflow: auto;
+    background: rgba(255, 255, 255, .88);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, .5);
+    border-radius: 28px;
+    padding: 22px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, .10);
+    z-index: 50;
+}
+
+.bill-cart-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 18px;
+}
+
+.bill-items-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+.bill-item-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px;
+    border-radius: 16px;
+    background: #f9fafb;
+}
+
+.bill-item-row button {
+    border: none;
+    background: #fee2e2;
+    color: #dc2626;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.bill-summary {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 18px;
+}
+
+.bill-summary div {
+    display: flex;
+    justify-content: space-between;
+}
+
+.grand-total {
+    padding-top: 12px;
+    border-top: 1px dashed #d1d5db;
+    font-size: 1.1rem;
+    font-weight: 800;
+}
+
+/* ===============================
+   QUICK MENU DRAWER
+================================ */
+.quick-menu-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, .45);
+    opacity: 0;
+    pointer-events: none;
+    transition: .3s ease;
+    z-index: 100;
+}
+
+.quick-menu-overlay.open {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.quick-menu-drawer {
+    position: absolute;
+    right: -100%;
+    top: 0;
+    width: 480px;
+    max-width: 95%;
+    height: 100%;
+    background: white;
+    transition: .35s ease;
+    overflow-y: auto;
+    padding: 28px;
+}
+
+.quick-menu-overlay.open .quick-menu-drawer {
+    right: 0;
+}
+
+.quick-menu-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.drawer-close-btn {
+    border: none;
+    background: #f3f4f6;
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    cursor: pointer;
+}
+
+.quick-menu-search {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px;
+    border-radius: 16px;
+    background: #f9fafb;
+    margin-bottom: 24px;
+}
+
+.quick-menu-search input {
+    border: none;
+    background: transparent;
+    width: 100%;
+    outline: none;
+}
+
+.quick-items-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.quick-food-btn {
+    border: none;
+    background: #f9fafb;
+    padding: 12px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    cursor: pointer;
+    transition: .25s;
+}
+
+.quick-food-btn:hover {
+    background: #fdfaf1;
+    border: 1px solid var(--primary-olive-light);
+    transform: translateX(4px);
+}
+
+.quick-food-card:hover {
+    background: #fdfaf1;
+    border: 1px solid var(--primary-olive-light);
+    transform: translateY(-2px);
+}
+
+.quick-food-btn img {
+    width: 56px;
+    height: 56px;
+    border-radius: 14px;
+    object-fit: cover;
+}
+
+/* ===============================
+   PREVIEW MODAL
+================================ */
+.bill-preview-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, .55);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 120;
+}
+
+.bill-preview-modal {
+    width: 95%;
+    max-width: 1100px;
+    max-height: 92vh;
+    overflow: auto;
+    background: white;
+    border-radius: 28px;
+    padding: 28px;
+}
+
+.bill-preview-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.close-preview-btn {
+    border: none;
+    background: #f3f4f6;
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    cursor: pointer;
+}
+
+/* ===============================
+   PAYMENT UI
+================================ */
+.payment-options {
+    display: flex;
+    gap: 12px;
+    margin: 14px 0;
+}
+
+.payment-pill {
+    border: none;
+    padding: 12px 18px;
+    border-radius: 14px;
+    background: #f3f4f6;
+    cursor: pointer;
+    font-weight: 700;
+}
+
+.payment-pill.active {
+    background: var(--primary-olive);
+    color: white;
+}
+
+.upi-box,
+.card-placeholder {
+    margin-top: 16px;
+    padding: 20px;
+    border-radius: 18px;
+    background: #f9fafb;
+}
+
+.upi-qr-preview {
+    margin-top: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+/* ===============================
+   RECEIPT STYLING
+================================ */
+.thermal-receipt,
+.counter-receipt {
+    width: 100%;
+    max-width: 420px;
+    background: #fff;
+    border: 1px dashed #d1d5db;
+    padding: 20px;
+    margin: 20px auto;
+    font-family: monospace;
+}
+
+.receipt-header {
+    text-align: center;
+    margin-bottom: 14px;
+}
+
+.receipt-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 14px;
+    font-size: 13px;
+}
+
+.primary-counter-badge,
+.counter-number {
+    background: #111827;
+    color: white;
+    padding: 8px 14px;
+    border-radius: 12px;
+    text-align: center;
+    font-weight: 700;
+    margin-bottom: 14px;
+}
+
+.receipt-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 14px;
+}
+
+.receipt-table th,
+.receipt-table td {
+    padding: 8px 4px;
+    border-bottom: 1px dashed #d1d5db;
+    font-size: 13px;
+    text-align: left;
+}
+
+.receipt-summary {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.receipt-summary div {
+    display: flex;
+    justify-content: space-between;
+}
+
+.receipt-footer {
+    margin-top: 14px;
+    font-size: 13px;
+    text-align: center;
+}
+
+/* ===============================
+   RESPONSIVE
+================================ */
+@media(max-width:1100px) {
+    .floating-bill-cart {
+        position: relative;
+        width: 100%;
+        right: auto;
+        top: auto;
+        margin-top: 24px;
+    }
+}
+
+/* ===============================
+   INLINE QUICK MENU
+================================ */
+.inline-quick-menu {
+    background: rgba(255, 255, 255, .8);
+    backdrop-filter: blur(16px);
+    padding: 24px;
+    border-radius: 24px;
+    margin-bottom: 28px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, .06);
+}
+
+.quick-items-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-top: 14px;
+}
+
+.quick-food-card {
+    border: none;
+    background: #f9fafb;
+    padding: 14px 18px;
+    border-radius: 16px;
+    min-width: 180px;
+    text-align: left;
+    cursor: pointer;
+    transition: .25s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.quick-food-card:hover {
+    background: #ede9fe;
+    transform: translateY(-2px);
+}
+
+.quick-food-card span {
+    font-weight: 700;
+}
+
+.quick-food-card small {
+    color: #16a34a;
+    font-weight: 600;
+}
+
+/* ===============================
+   FULL WIDTH FORM
+================================ */
+.full-width {
+    display: flex;
+    gap: 18px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+/* ===============================
+   FLOATING BOTTOM BILL BAR
+================================ */
+/* --- DRAGGABLE BILL WIDGET (OLIVE THEME) --- */
+.draggable-bill-widget {
+    position: fixed;
+    bottom: 30px;
+    left: 30px;
+    width: 360px;
+    background: #fdfaf1; /* Cream surface */
+    border: 2px solid var(--primary-olive);
+    border-radius: 26px;
+    padding: 24px;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    cursor: grab;
+}
+
+.draggable-bill-widget:active {
+    cursor: grabbing;
+}
+
+.widget-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.widget-header h3 {
+    font-size: 1.2rem;
+    font-weight: 900;
+    color: var(--primary-olive);
+}
+
+.widget-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 20px;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.widget-chip {
+    background: #eef2ff;
+    background: var(--primary-olive-light);
+    color: white;
+    padding: 8px 14px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.widget-chip button {
+    background: none;
+    border: none;
+    color: #fca5a5;
+    font-size: 18px;
+    cursor: pointer;
+    font-weight: 800;
+    padding: 0;
+}
+
+.widget-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 16px;
+    border-top: 1px dashed #d1d5db;
+    margin-bottom: 4px;
+}
+
+.widget-total span {
+    font-weight: 700;
+    color: #6b7280;
+}
+
+.widget-total strong {
+    font-size: 1.4rem;
+    color: var(--primary-olive);
+    font-weight: 900;
+}
+
+/* ===============================
+   FLOATING MINI BILL WIDGET
+================================ */
+.floating-mini-bill {
+    position: fixed;
+    right: 24px;
+    bottom: 24px;
+    width: 380px;
+    max-height: 75vh;
+    display: flex;
+    flex-direction: column;
+    background: rgba(255, 255, 255, .92);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, .5);
+    border-radius: 24px;
+    padding: 20px;
+    box-shadow:
+        0 24px 50px rgba(0, 0, 0, .16);
+    z-index: 100;
+    animation: slideMiniBill .35s ease;
+}
+
+/* HEADER */
+.mini-bill-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.mini-bill-header h3 {
+    font-size: 1.1rem;
+    font-weight: 800;
+}
+
+.mini-bill-header span {
+    font-size: .9rem;
+    color: #6b7280;
+}
+
+/* ITEMS */
+.mini-bill-items {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: 280px;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+.mini-bill-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 14px;
+    border-radius: 16px;
+    background: #f9fafb;
+    transition: .25s ease;
+}
+
+.mini-bill-item:hover {
+    background: #ede9fe;
+}
+
+.mini-bill-item strong {
+    display: block;
+    font-size: .95rem;
+}
+
+.mini-bill-item span {
+    font-size: .8rem;
+    color: #6b7280;
+}
+
+.mini-bill-item button {
+    border: none;
+    background: #fee2e2;
+    color: #dc2626;
+    width: 30px;
+    height: 30px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 800;
+}
+
+/* SUMMARY */
+.mini-bill-summary {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px dashed #d1d5db;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.mini-bill-summary div {
+    display: flex;
+    justify-content: space-between;
+    font-weight: 700;
+}
+
+/* BUTTON */
+.mini-generate-btn {
+    margin-top: 18px;
+    width: 100%;
+    justify-content: center;
+}
+
+/* ANIMATION */
+@keyframes slideMiniBill {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* RESPONSIVE */
+@media(max-width:768px) {
+    .floating-mini-bill {
+        width: calc(100% - 24px);
+        right: 12px;
+        bottom: 12px;
+    }
+}
+
+/* ===============================
+   DRAGGABLE FLOATING BILL WIDGET
+================================ */
+.draggable-bill-widget {
+    position: fixed;
+    bottom: 24px;
+    left: 24px;
+    width: 360px;
+    max-width: 90vw;
+    background: rgba(255, 255, 255, .88);
+    backdrop-filter: blur(18px);
+    border: 1px solid rgba(255, 255, 255, .45);
+    border-radius: 26px;
+    padding: 20px;
+    box-shadow:
+        0 24px 50px rgba(0, 0, 0, .15);
+    z-index: 100;
+    cursor: grab;
+    user-select: none;
+}
+
+.draggable-bill-widget:active {
+    cursor: grabbing;
+}
+
+/* HEADER */
+.widget-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.widget-header h3 {
+    font-size: 1.1rem;
+    font-weight: 800;
+}
+
+.widget-header span {
+    color: #6b7280;
+    font-size: .9rem;
+}
+
+/* ITEMS */
+.widget-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 18px;
+    max-height: 180px;
+    overflow-y: auto;
+}
+
+.widget-chip {
+    background: #eef2ff;
+    color: #4338ca;
+    padding: 10px 14px;
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
+    transition: .25s ease;
+}
+
+.widget-chip:hover {
+    transform: translateY(-1px);
+    background: #e0e7ff;
+}
+
+.widget-chip button {
+    border: none;
+    background: none;
+    color: #dc2626;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 800;
+}
+
+/* TOTAL */
+.widget-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    padding-top: 14px;
+    border-top: 1px dashed #d1d5db;
+}
+
+.widget-total span {
+    color: #6b7280;
+    font-weight: 600;
+}
+
+.widget-total strong {
+    font-size: 1.25rem;
+    color: #111827;
+}
+
+/* BUTTON */
+.widget-generate-btn {
+    width: 100%;
+    border: none;
+    padding: 14px;
+    border-radius: 16px;
+    background: linear-gradient(135deg,
+            #7c3aed,
+            #5b21b6);
+    color: white;
+    font-weight: 800;
+    cursor: pointer;
+    transition: .25s ease;
+}
+
+.widget-generate-btn:hover {
+    transform: translateY(-2px);
+    box-shadow:
+        0 12px 24px rgba(124, 58, 237, .25);
+}
+
+/* CATEGORY / SEARCH FOOD PREVIEW */
+.category-food-preview {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+
+.category-food-btn {
+    border: none;
+    background: #eef2ff;
+    color: #4338ca;
+    padding: 12px 16px;
+    border-radius: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: .25s ease;
+}
+
+.category-food-btn:hover {
+    background: #ddd6fe;
+    transform: translateY(-2px);
+}
+
+.category-food-btn span {
+    color: #16a34a;
+    font-weight: 700;
+}
+
+/* STACK SELECTIONS VERTICALLY */
+.selection-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    margin-top: 20px;
+}
+
+/* LABELS */
+.selection-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.selection-group label {
+    font-size: 15px;
+    font-weight: 700;
+    color: #111827;
+}
+
+/* BUTTON WRAP */
+.pill-selector {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+}
+
+/* PREMIUM BUTTONS */
+.pill-btn {
+    border: none;
+    padding: 14px 24px;
+    border-radius: 14px;
+    background: linear-gradient(135deg,
+            #2563eb,
+            #1d4ed8);
+    color: white;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all .25s ease;
+    box-shadow:
+        0 8px 18px rgba(37, 99, 235, .18);
+}
+
+/* HOVER */
+.pill-btn:hover {
+    transform: translateY(-2px);
+    box-shadow:
+        0 14px 24px rgba(37, 99, 235, .22);
+}
+
+/* ACTIVE / SELECTED */
+.pill-btn.active {
+    background: linear-gradient(135deg,
+            #16a34a,
+            #15803d);
+    box-shadow:
+        0 10px 20px rgba(22, 163, 74, .25);
+}
+
+/* GENERATE BILL BUTTON */
+.generate-bill-btn {
+    width: fit-content;
+    padding: 16px 28px;
+    border: none;
+    border-radius: 16px;
+    background: linear-gradient(135deg,
+            #7c3aed,
+            #5b21b6);
+    color: white;
+    font-weight: 800;
+    font-size: 15px;
+    cursor: pointer;
+    transition: .25s ease;
+}
+
+.generate-bill-btn:hover {
+    transform: translateY(-2px);
+    box-shadow:
+        0 14px 24px rgba(124, 58, 237, .25);
+}
+
+/* --- POS SPLIT VIEW MODAL --- */
+.bill-preview-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+}
+
+.bill-preview-modal-split {
+    background: white;
+    width: 950px;
+    height: 85vh;
+    display: flex;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 50px 100px rgba(0,0,0,0.4);
+}
+
+.modal-left-panel {
+    flex: 1.2;
+    background: #fdfaf1;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid #e2e8f0;
+}
+
+.close-mini-btn {
+    background: #fee2e2;
+    color: #ef4444;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.close-mini-btn:hover {
+    background: #fecaca;
+    transform: rotate(90deg);
+}
+
+.panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.panel-header h2 {
+    font-size: 1.8rem;
+    font-weight: 900;
+    color: var(--primary-olive);
+}
+
+.config-group {
+    margin-bottom: 32px;
+}
+
+.config-group label {
+    display: block;
+    font-weight: 700;
+    margin-bottom: 16px;
+    color: #64748b;
+}
+
+.payment-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+}
+
+.method-btn {
+    padding: 16px;
+    border-radius: 16px;
+    border: 2px solid #e2e8f0;
+    background: white;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.method-btn.active {
+    border-color: var(--primary-olive);
+    background: var(--primary-olive-light);
+    color: white;
+}
+
+.method-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #cbd5e1;
+}
+
+.method-btn.active .method-dot {
+    background: white;
+    box-shadow: 0 0 10px white;
+}
+
+.upi-config-card {
+    background: white;
+    padding: 24px;
+    border-radius: 20px;
+    border: 1px solid #e2e8f0;
+}
+
+.qr-preview-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    padding: 20px;
+    margin-top: 16px;
+    border: 2px dashed #e2e8f0;
+    border-radius: 16px;
+}
+
+.qr-preview-box p {
+    font-weight: 700;
+    color: var(--primary-olive);
+}
+
+.modal-right-preview {
+    flex: 1;
+    background: #f1f5f9;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+}
+
+.receipt-scroll-container {
+    flex: 1;
+    overflow-y: auto;
+    padding-bottom: 40px;
+}
+
+.preview-label {
+    text-align: center;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 2px;
+    color: #94a3b8;
+    margin-bottom: 20px;
+}
+
+.modal-actions-footer {
+    margin-top: auto;
+    display: flex;
+    gap: 16px;
+}
+
+.confirm-btn-primary {
+    flex: 2;
+    background: var(--primary-olive);
+    color: white;
+    border: none;
+    padding: 18px;
+    border-radius: 16px;
+    font-weight: 800;
+    font-size: 1.1rem;
+    cursor: pointer;
+}
+
+.secondary-btn-outline {
+    flex: 1;
+    background: white;
+    border: 2px solid var(--primary-olive);
+    color: var(--primary-olive);
+    padding: 18px;
+    border-radius: 16px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    cursor: pointer;
+}
+
+/* --- THERMAL RECEIPT STYLING --- */
+.receipt-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    align-items: center;
+}
+
+.thermal-receipt {
+    background: white;
+    width: 300px; /* Standard 80mm width */
+    padding: 25px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    color: #1a1a1a;
+    font-family: 'Inter', 'Courier New', Courier, monospace;
+}
+
+.receipt-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.receipt-header h2 {
+    font-size: 1.4rem;
+    font-weight: 900;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+}
+
+.receipt-header p {
+    font-size: 0.75rem;
+    color: #666;
+}
+
+.receipt-meta {
+    border-top: 1px dashed #ccc;
+    border-bottom: 1px dashed #ccc;
+    padding: 10px 0;
+    margin-bottom: 15px;
+}
+
+.meta-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    margin-bottom: 4px;
+}
+
+.counter-tag {
+    background: #000;
+    color: #fff;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: 800;
+}
+
+.receipt-customer {
+    font-size: 0.85rem;
+    margin-bottom: 15px;
+    padding-bottom: 5px;
+}
+
+.receipt-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.receipt-table th {
+    text-align: left;
+    font-size: 0.75rem;
+    border-bottom: 1px solid #000;
+    padding-bottom: 5px;
+}
+
+.receipt-table td {
+    padding: 8px 0;
+    font-size: 0.85rem;
+    vertical-align: top;
+}
+
+.receipt-divider {
+    border-top: 1px dashed #000;
+    margin: 15px 0;
+}
+
+.receipt-summary {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+}
+
+.grand-total {
+    font-size: 1.1rem;
+    font-weight: 900;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 2px solid #000;
+}
+
+.receipt-footer {
+    text-align: center;
+    margin-top: 25px;
+    font-size: 0.7rem;
+    color: #555;
+}
+
+.thank-you {
+    font-weight: 800;
+    margin-top: 10px;
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+}
+
+/* SUB-BILL SPECIFIC */
+.sub-bill {
+    border-left: 4px solid var(--primary-olive);
+}
+
+.sub-header {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.sub-title {
+    font-weight: 900;
+    letter-spacing: 2px;
+    font-size: 0.9rem;
+    background: #f1f5f9;
+    padding: 4px;
+    margin-bottom: 10px;
+}
+
+.sub-meta {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    font-size: 0.7rem;
+    font-weight: 700;
+}
+
+.sub-counter-badge {
+    margin-top: 8px;
+    font-size: 1.2rem;
+    font-weight: 900;
+    color: var(--primary-olive);
+}
+
+.sub-footer {
+    text-align: center;
+    font-size: 0.65rem;
+    color: #999;
+    margin-top: 15px;
+}
+

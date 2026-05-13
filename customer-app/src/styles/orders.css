@@ -1,0 +1,240 @@
+/* ============================================================
+   ORDERS PAGE STYLES
+   ============================================================ */
+
+.orders-page {
+    padding: 32px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.orders-header {
+    margin-bottom: 32px;
+}
+
+.orders-header h1 {
+    font-size: 2.4rem;
+    font-weight: 800;
+    margin-bottom: 24px;
+}
+
+/* --- TABS --- */
+.orders-tabs {
+    display: flex;
+    gap: 12px;
+    background: #f1f5f9;
+    padding: 6px;
+    border-radius: 16px;
+    width: fit-content;
+}
+
+.tab-btn {
+    padding: 10px 24px;
+    border-radius: 12px;
+    border: none;
+    background: transparent;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.2s ease;
+    color: #64748b;
+}
+
+.tab-btn.active {
+    background: white;
+    color: #7c3aed;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+/* --- ORDERS GRID --- */
+.orders-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.order-card {
+    background: white;
+    border-radius: 24px;
+    padding: 28px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.04);
+    border: 1px solid #f1f5f9;
+    transition: 0.2s ease;
+}
+
+.order-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(0,0,0,0.08);
+}
+
+.order-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px dashed #e2e8f0;
+}
+
+.bill-no {
+    font-family: 'Monaco', 'Consolas', monospace;
+    font-weight: 800;
+    color: #7c3aed;
+    background: #f5f3ff;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 0.95rem;
+}
+
+.order-meta {
+    text-align: right;
+}
+
+.order-date {
+    display: block;
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
+.order-status {
+    display: inline-block;
+    margin-top: 6px;
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 99px;
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.order-status.ready {
+    background: #f0fdf4;
+    color: #16a34a;
+    border: 1px solid #bcf0da;
+    box-shadow: 0 0 10px rgba(34, 197, 94, 0.2);
+    animation: flash 2s infinite;
+}
+
+@keyframes flash {
+    0% { opacity: 1; }
+    50% { opacity: 0.6; }
+    100% { opacity: 1; }
+}
+
+.order-status.passed {
+    background: #ecfdf5;
+    color: #059669;
+}
+
+/* --- ITEMS --- */
+.order-items-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.order-item-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1rem;
+}
+
+.item-qty-name {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.item-qty {
+    background: #f1f5f9;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-weight: 800;
+    font-size: 0.85rem;
+}
+
+.item-price {
+    font-weight: 700;
+    color: #475569;
+}
+
+/* --- FOOTER --- */
+.order-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 20px;
+    border-top: 1px solid #f1f5f9;
+}
+
+.order-total-block h4 {
+    margin: 0;
+    color: #64748b;
+    font-size: 0.85rem;
+}
+
+.order-total-price {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: #1e293b;
+}
+
+.delivery-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #64748b;
+    margin-bottom: 12px;
+}
+
+.pass-ttb-btn {
+    padding: 12px 24px;
+    border-radius: 14px;
+    border: none;
+    background: #0ea5e9;
+    color: white;
+    font-weight: 800;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.pass-ttb-btn:hover {
+    background: #0284c7;
+    transform: scale(1.05);
+}
+
+.pass-ttb-btn.passed {
+    background: #22c55e;
+    cursor: default;
+    transform: none;
+}
+
+/* --- EMPTY STATE --- */
+.orders-empty {
+    text-align: center;
+    padding: 80px 40px;
+    background: white;
+    border-radius: 32px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.04);
+}
+
+.ready-notification-bar {
+    background: #10b981;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    box-shadow: 0 8px 20px rgba(16, 185, 129, 0.2);
+}
+
+.ready-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 700;
+    font-size: 0.9rem;
+}
